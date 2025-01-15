@@ -1,0 +1,64 @@
+ItemCategory
+    id
+    name
+
+ItemRarity
+    id
+    name
+
+Item
+    id
+    name
+    description
+    itemCategory
+    itemRarity
+    slot
+    value
+
+Inventory
+    id
+    Player
+    List<Item>
+
+Slot
+    id
+    name
+
+Equipment
+    id
+    Player
+    Map<Slot, Item>
+
+Player
+    id
+    name
+    gold
+    inventory
+    equipment
+
+createItem                  POST items/ - body: all item attributes
+getItem                     GET items/{itemId}
+getAllItems                 GET items/
+updateItem                  PUT items/{itemid} - body: all item attributes
+deleteItem                  DELETE items/{itemId}
+getItemCategories           GET items/categories/
+getItemRarities             GET items/rarities/
+getItemByCategoryAndRarity  GET items?categoryId={categoryId}&rarityId={rarityId}
+
+createUser          POST users/ - body: all user attributes
+getUserById         GET users/{id}
+updateUser          PUT users/{id} - body: all user attributes
+patchUser           PATCH users/{id} - body: some user attributes
+deleteUser          DELETE users/{id}
+
+addItem             POST inventories/{userId}/
+getUserInventory    GET inventories/{userId}/
+removeItem          DELETE inventories/{inventoryId}
+clearInventory      DELETE inventories/ - body: {userId}
+
+equipItem           PATCH equipment/{userId}/ - body: {slotId, inventoryId}
+getEquippedItems    GET equipment/{userId}/
+unequipItem         DELETE equipment/{userId} - body: {inventoryId}
+
+buyItem             POST buy/{userId}/{itemId} 
+sellItem            POST sell/{userId}/{inventoryId}
