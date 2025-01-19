@@ -15,9 +15,6 @@ import com.raps4g.rpginventory.repositories.ItemRarityRepository;
 import com.raps4g.rpginventory.repositories.ItemRepository;
 import com.raps4g.rpginventory.repositories.SlotRepository;
 
-/**
- * DataLoader
- */
 @Component
 public class DataLoader implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(DataLoader.class);
@@ -40,77 +37,6 @@ public class DataLoader implements CommandLineRunner {
     @Transactional
     @Override
     public void run(String... args) throws Exception {
-            ItemCategory weaponCategory = ItemCategory.builder()
-                    .id(1L)
-                    .name("Weapons")
-                    .build();
-            itemCategoryRepository.save(weaponCategory);
-            ItemCategory armorCategory = ItemCategory.builder()
-                    .id(2L)
-                    .name("Armor")
-                    .build();
-            itemCategoryRepository.save(armorCategory);
-            ItemCategory potionCategory = ItemCategory.builder()
-                    .id(3L)
-                    .name("Potions")
-                    .build();
-            itemCategoryRepository.save(potionCategory);
-            ItemCategory materialCategory = ItemCategory.builder()
-            .id(4L)
-                    .name("Materials")
-                    .build();
-            itemCategoryRepository.save(materialCategory);
-            ItemCategory accessoryCategory = ItemCategory.builder()
-                    .id(5L)
-                    .name("Accessories")
-                    .build();
-            itemCategoryRepository.save(accessoryCategory);
-            ItemCategory miscCategory = ItemCategory.builder()
-                    .id(6L)
-                    .name("Miscellaneous")
-                    .build();
-            itemCategoryRepository.save(miscCategory);
 
-            ItemRarity commonRarity = ItemRarity.builder()
-                    .id(1L)
-                    .name("Common")
-                    .build();
-            itemRarityRepository.save(commonRarity);
-            ItemRarity uncommonRarity = ItemRarity.builder()
-                    .id(2L)
-                    .name("Uncommon")
-                    .build();
-            itemRarityRepository.save(uncommonRarity);
-            ItemRarity rareRarity = ItemRarity.builder()
-                    .id(3L)
-                    .name("Rare")
-                    .build();
-            itemRarityRepository.save(rareRarity);
-            ItemRarity epicRarity = ItemRarity.builder()
-                    .id(4L)
-                    .name("Epic")
-                    .build();
-            itemRarityRepository.save(epicRarity);
-            ItemRarity legendaryRarity = ItemRarity.builder()
-                    .id(5L)
-                    .name("Legendary")
-                    .build();
-            itemRarityRepository.save(legendaryRarity);
-            
-            Slot leftHandSlot = new Slot(1L, "Left hand");
-            slotRepository.save(leftHandSlot);
-
-            Item basicSword = Item.builder()
-            .name("Basic sword")
-            .description("Just a sword")
-            .validSlot(leftHandSlot)
-            .itemRarity(commonRarity)
-            .itemCategory(weaponCategory)
-            .build();
-            itemRepository.save(basicSword);
-
-            
-
-            
     }
 }
