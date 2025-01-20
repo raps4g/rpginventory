@@ -1,7 +1,6 @@
 package com.raps4g.rpginventory.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,9 +12,9 @@ public interface PlayerService {
 
     // Mappers
    
-    Player convertFromPlayerDto(PlayerDto itemDto);
+    Player mapFromPlayerDto(PlayerDto itemDto);
 
-    PlayerDto convertToPlayerDto(Player item);
+    PlayerDto mapToPlayerDto(Player item);
 
     // Add
 
@@ -23,7 +22,7 @@ public interface PlayerService {
 
     // Get
 
-    Optional<Player> getPlayer(Long playerId);
+    Player getPlayer(Long playerId);
    
     List<Player> getAllPlayers();
     
@@ -32,5 +31,4 @@ public interface PlayerService {
     // Delete
 
     void deletePlayer(Long itemId);
-    
 }

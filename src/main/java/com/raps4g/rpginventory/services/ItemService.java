@@ -1,7 +1,6 @@
 package com.raps4g.rpginventory.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,34 +11,40 @@ import com.raps4g.rpginventory.domain.entities.ItemRarity;
 import com.raps4g.rpginventory.domain.entities.dto.ItemCategoryDto;
 import com.raps4g.rpginventory.domain.entities.dto.ItemDto;
 import com.raps4g.rpginventory.domain.entities.dto.ItemRarityDto;
+import com.raps4g.rpginventory.domain.entities.dto.ItemRequestDto;
 
 public interface ItemService {
 
     // Mappers
-   
-    Item convertFromItemDto(ItemDto itemDto);
+  
+    ItemCategory mapFromItemCategoryDto(ItemCategoryDto itemCategoryDto);
 
-    ItemDto convertToItemDto(Item item);
+    ItemCategoryDto mapToItemCategoryDto(ItemCategory itemCategory);
 
-    ItemCategory convertFromItemCategoryDto(ItemCategoryDto itemCategoryDto);
+    ItemRarity mapFromItemRarityDto(ItemRarityDto itemRarityDto);
 
-    ItemCategoryDto convertToItemCategoryDto(ItemCategory itemCategory);
+    ItemRarityDto mapToItemRarityDto(ItemRarity itemRarity);
 
-    ItemRarity convertFromItemRarityDto(ItemRarityDto itemRarityDto);
+    Item mapFromItemRequestDto(ItemRequestDto itemRequestDto);
 
-    ItemRarityDto convertToItemRarityDto(ItemRarity itemRarity);
+    ItemDto mapToItemDto(Item item);
+
     
     // Add
 
-    ItemRarity saveItemRarity(ItemRarity itemRarity);
-
     ItemCategory saveItemCategory(ItemCategory itemCategory);
+
+    ItemRarity saveItemRarity(ItemRarity itemRarity);
 
     Item saveItem(Item item);
 
     // Get
 
-    Optional<Item> getItem(Long itemId);
+    List<ItemCategory> getAllItemCategories();
+
+    List<ItemRarity> getAllItemRarities();
+
+    Item getItem(Long itemId);
     
     List<Item> getAllItems();
 
@@ -51,17 +56,12 @@ public interface ItemService {
 
     Page<Item> getAllItemsByCategoryAndRarity(Pageable pageable, Long categoryId, Long rarityId);
 
-    List<ItemCategory> getAllItemCategories();
-    
-    List<ItemRarity> getAllItemRarities();
-
     // Delete
 
-    void deleteItem(Long itemId);
-    
     void deleteItemCategory(Long itemCategoryId);
     
     void deleteItemRarity(Long itemRarityId);
 
+    void deleteItem(Long itemId);
 
 }

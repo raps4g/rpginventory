@@ -1,11 +1,11 @@
 package com.raps4g.rpginventory.services.impl;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,9 @@ import com.raps4g.rpginventory.domain.entities.Slot;
 import com.raps4g.rpginventory.domain.entities.dto.ItemCategoryDto;
 import com.raps4g.rpginventory.domain.entities.dto.ItemDto;
 import com.raps4g.rpginventory.domain.entities.dto.ItemRarityDto;
+import com.raps4g.rpginventory.domain.entities.dto.ItemRequestDto;
 import com.raps4g.rpginventory.exceptions.ResourceAlreadyExistsException;
+import com.raps4g.rpginventory.exceptions.ResourceNotFoundException;
 import com.raps4g.rpginventory.repositories.ItemCategoryRepository;
 import com.raps4g.rpginventory.repositories.ItemRarityRepository;
 import com.raps4g.rpginventory.repositories.ItemRepository;
@@ -27,80 +29,97 @@ import com.raps4g.rpginventory.services.ItemService;
 
 @Service
 public class ItemServiceImpl implements ItemService{
-   
-    private ModelMapper modelMapper;
-    private ItemRarityRepository itemRarityRepository;
+
+    @Autowired
     private ItemCategoryRepository itemCategoryRepository;
-    private SlotRepository slotRepository;
-    private ItemRepository itemRepository;
-
-
-    public ItemServiceImpl( ItemRepository itemRepository,
-                SlotRepository slotRepository,
-                ItemCategoryRepository itemCategoryRepository,
-                ItemRarityRepository itemRarityRepository,
-                ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-        this.itemRepository = itemRepository;
-        this.itemCategoryRepository = itemCategoryRepository;
-        this.itemRarityRepository = itemRarityRepository;
-        this.slotRepository = slotRepository;
-    }
     
+    @Autowired
+    private ItemRarityRepository itemRarityRepository;
+    
+    @Autowired
+    private ItemRepository itemRepository;
+    
+    @Autowired
+    private SlotRepository slotRepository;
+    
+    @Autowired
+    private ModelMapper modelMapper;
+   
+
     // Mappers
 
     @Override
-    public Item convertFromItemDto(ItemDto itemDto) {
-        
-        ItemCategory itemCategory = itemCategoryRepository.findByName(itemDto.getItemCategory().getName())
-            .orElseGet(() -> new ItemCategory(null, itemDto.getItemCategory().getName()));
+    public ItemCategory mapFromItemCategoryDto(ItemCategoryDto itemCategoryDto) {
+        return modelMapper.map(itemCategoryDto, ItemCategory.class);
+    }
+    
+    @Override
+    public ItemCategoryDto mapToItemCategoryDto(ItemCategory itemCategory) {
+        return modelMapper.map(itemCategory, ItemCategoryDto.class);
+    }
+    
+    @Override
+    public ItemRarity mapFromItemRarityDto(ItemRarityDto itemRarityDto) {
+        return modelMapper.map(itemRarityDto, ItemRarity.class);
+    }
 
-        ItemRarity itemRarity = itemRarityRepository.findByName(itemDto.getItemRarity().getName())
-            .orElseGet(() -> new ItemRarity(null, itemDto.getItemRarity().getName()));
+    @Override
+    public ItemRarityDto mapToItemRarityDto(ItemRarity itemRarity) {
+        return modelMapper.map(itemRarity, ItemRarityDto.class);
+    }
+    
+    @Override
+    public Item mapFromItemRequestDto(ItemRequestDto itemRequestDto) {
+
+        ItemCategory itemCategory = itemCategoryRepository.findById(itemRequestDto.getItemCategoryId())
+            .orElseThrow(() -> new ResourceNotFoundException("Item category with id " + itemRequestDto.getItemCategoryId() + " not found."));
+
+        ItemRarity itemRarity = itemRarityRepository.findById(itemRequestDto.getItemRarityId())
+            .orElseThrow(() -> new ResourceNotFoundException("Item rarity with id " + itemRequestDto.getItemRarityId() + " not found."));
         
-        Slot validSlot = slotRepository.findByName(itemDto.getValidSlot().getName())
-            .orElseGet(() -> new Slot(null, itemDto.getValidSlot().getName()));
+        Slot validSlot = slotRepository.findById(itemRequestDto.getValidSlotId())
+            .orElseThrow(() -> new ResourceNotFoundException("Slot with id " + itemRequestDto.getValidSlotId() + " not found."));
 
         Item item = Item.builder()
-            .name(itemDto.getName())
-            .description(itemDto.getDescription())
+            .name(itemRequestDto.getName())
+            .description(itemRequestDto.getDescription())
             .itemCategory(itemCategory)
             .itemRarity(itemRarity)
             .validSlot(validSlot)
-            .value(itemDto.getValue())
+            .value(itemRequestDto.getValue())
             .build();
 
         return item;        
     }
 
     @Override
-    public ItemDto convertToItemDto(Item item) {
+    public ItemDto mapToItemDto(Item item) {
         return modelMapper.map(item, ItemDto.class);
-    }
-
-    @Override
-    public ItemCategory convertFromItemCategoryDto(ItemCategoryDto itemCategoryDto) {
-        return modelMapper.map(itemCategoryDto, ItemCategory.class);
-    }
-
-    @Override
-    public ItemRarity convertFromItemRarityDto(ItemRarityDto itemRarityDto) {
-        return modelMapper.map(itemRarityDto, ItemRarity.class);
-    }
-
-    @Override
-    public ItemCategoryDto convertToItemCategoryDto(ItemCategory itemCategory) {
-        return modelMapper.map(itemCategory, ItemCategoryDto.class);
-    }
-
-    @Override
-    public ItemRarityDto convertToItemRarityDto(ItemRarity itemRarity) {
-        return modelMapper.map(itemRarity, ItemRarityDto.class);
     }
 
 
     // Add
 
+    @Override
+    public ItemCategory saveItemCategory(ItemCategory itemCategory) {
+
+        if (itemCategoryRepository.findByName(itemCategory.getName()).isPresent()) {
+            throw new ResourceAlreadyExistsException("Item category named \""+ itemCategory.getName() + "\" already exists.");
+        }
+        return itemCategoryRepository.save(itemCategory);
+
+    }
+
+    @Override
+    public ItemRarity saveItemRarity(ItemRarity itemRarity) {
+
+        if (itemRarityRepository.findByName(itemRarity.getName()).isPresent()) {
+            throw new ResourceAlreadyExistsException("Item rarity named \"" + itemRarity.getName() + "\" already exists.");
+        }
+        return itemRarityRepository.save(itemRarity);
+
+    }
+   
     @Override
     public Item saveItem(Item item) {
         if (itemRepository.findByName(item.getName()).isPresent()) {
@@ -122,29 +141,31 @@ public class ItemServiceImpl implements ItemService{
         return itemRepository.save(item);
     }
 
-    @Override
-    public ItemRarity saveItemRarity(ItemRarity itemRarity) {
-        if (itemRarityRepository.findByName(itemRarity.getName()).isPresent()) {
-            throw new ResourceAlreadyExistsException("Item rarity named \"" + itemRarity.getName() + "\" already exists.");
-        }
-        return itemRarityRepository.save(itemRarity);
-    }
-   
-    @Override
-    public ItemCategory saveItemCategory(ItemCategory itemCategory) {
-        if (itemCategoryRepository.findByName(itemCategory.getName()).isPresent()) {
-            throw new ResourceAlreadyExistsException("Item category named \""+ itemCategory.getName() + "\" already exists.");
-        }
-
-        return itemCategoryRepository.save(itemCategory);
-    }
-    
 
     // Get
 
     @Override
-    public Optional<Item> getItem(Long itemId) {
-        Optional<Item> foundItem = itemRepository.findById(itemId);
+    public List<ItemCategory> getAllItemCategories() {
+        return StreamSupport
+            .stream(
+                itemCategoryRepository.findAll().spliterator(),
+                false)
+        .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ItemRarity> getAllItemRarities() {
+        return StreamSupport
+            .stream(
+                itemRarityRepository.findAll().spliterator(),
+                false)
+        .collect(Collectors.toList());
+    }
+
+    @Override
+    public Item getItem(Long itemId) {
+        Item foundItem = itemRepository.findById(itemId)
+            .orElseThrow(() -> new ResourceNotFoundException("Item with id " + itemId + " not found."));
         return foundItem;
     }
 
@@ -168,43 +189,18 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public Page<Item> getAllItemsByCategoryAndRarity(Pageable pageable, Long categoryId, Long rarityId) {
-        return itemRepository.findByItemCategoryIdAndItemRarityId(categoryId, rarityId, pageable);
-    }
-
-    @Override
     public Page<Item> getAllItemsByRarity(Pageable pageable, Long rarityId) {
         return itemRepository.findByItemRarityId(rarityId, pageable);
     }
 
     @Override
-    public List<ItemCategory> getAllItemCategories() {
-        return StreamSupport
-            .stream(
-                itemCategoryRepository.findAll().spliterator(),
-                false)
-        .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ItemRarity> getAllItemRarities() {
-        return StreamSupport
-            .stream(
-                itemRarityRepository.findAll().spliterator(),
-                false)
-        .collect(Collectors.toList());
+    public Page<Item> getAllItemsByCategoryAndRarity(Pageable pageable, Long categoryId, Long rarityId) {
+        return itemRepository.findByItemCategoryIdAndItemRarityId(categoryId, rarityId, pageable);
     }
 
 
     // Delete
-    // placeholders, this funcitons should manage cases where items, categories,
-    // or rarities are referenced in other objects.
 
-    @Override
-    public void deleteItem(Long itemId) {
-        itemRepository.deleteById(itemId);
-    }
-    
     @Override
     public void deleteItemCategory(Long itemId) {
         itemCategoryRepository.deleteById(itemId);
@@ -215,4 +211,8 @@ public class ItemServiceImpl implements ItemService{
         itemRarityRepository.deleteById(itemId);
     }
 
+    @Override
+    public void deleteItem(Long itemId) {
+        itemRepository.deleteById(itemId);
+    }
 }

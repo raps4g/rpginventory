@@ -1,10 +1,9 @@
 package com.raps4g.rpginventory.controllers;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Locale.Category;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -24,100 +23,127 @@ import com.raps4g.rpginventory.domain.entities.ItemRarity;
 import com.raps4g.rpginventory.domain.entities.dto.ItemCategoryDto;
 import com.raps4g.rpginventory.domain.entities.dto.ItemDto;
 import com.raps4g.rpginventory.domain.entities.dto.ItemRarityDto;
+import com.raps4g.rpginventory.domain.entities.dto.ItemRequestDto;
 import com.raps4g.rpginventory.services.ItemService;
 
 @RestController
 public class ItemController {
+
+    @Autowired
     private ItemService itemService;
 
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
-    }
 
     // POST
 
-    @PostMapping(path = "/itemCategories")
+    @PostMapping(path = "/item-categories")
     public ResponseEntity<ItemCategoryDto> addItemCategory(@RequestBody ItemCategoryDto itemCategoryDto) {
-            ItemCategory itemCategory = itemService.convertFromItemCategoryDto(itemCategoryDto);
-            ItemCategory savedItemCategory = itemService.saveItemCategory(itemCategory);
-            ItemCategoryDto savedItemCategoryDto = itemService.convertToItemCategoryDto(savedItemCategory);
-            return new ResponseEntity<>(savedItemCategoryDto, HttpStatus.CREATED);
+
+        ItemCategory itemCategory = itemService.mapFromItemCategoryDto(itemCategoryDto);
+        ItemCategory savedItemCategory = itemService.saveItemCategory(itemCategory);
+        ItemCategoryDto savedItemCategoryDto = itemService.mapToItemCategoryDto(savedItemCategory);
+
+        return new ResponseEntity<>(savedItemCategoryDto, HttpStatus.CREATED);
     }
     
-    @PostMapping(path = "/itemRarities")
+    @PostMapping(path = "/item-rarities")
     public ResponseEntity<ItemRarityDto> addItemRarity(@RequestBody ItemRarityDto itemRarityDto) {
-            ItemRarity itemRarity = itemService.convertFromItemRarityDto(itemRarityDto);
-            ItemRarity savedItemRarity = itemService.saveItemRarity(itemRarity);
-            ItemRarityDto savedItemRarityDto = itemService.convertToItemRarityDto(savedItemRarity);
-            return new ResponseEntity<>(savedItemRarityDto, HttpStatus.CREATED);
+
+        ItemRarity itemRarity = itemService.mapFromItemRarityDto(itemRarityDto);
+        ItemRarity savedItemRarity = itemService.saveItemRarity(itemRarity);
+        ItemRarityDto savedItemRarityDto = itemService.mapToItemRarityDto(savedItemRarity);
+
+        return new ResponseEntity<>(savedItemRarityDto, HttpStatus.CREATED);
     }
     
     @PostMapping(path = "/items")
-    public ResponseEntity<ItemDto> addItem(@RequestBody ItemDto itemDto) {
-            Item item = itemService.convertFromItemDto(itemDto);
+    public ResponseEntity<ItemDto> addItem(@RequestBody ItemRequestDto itemRequestDto) {
+
+            Item item = itemService.mapFromItemRequestDto(itemRequestDto);
             Item savedItem = itemService.saveItem(item);
-            ItemDto savedItemDto = itemService.convertToItemDto(savedItem);
+            ItemDto savedItemDto = itemService.mapToItemDto(savedItem);
+
             return new ResponseEntity<>(savedItemDto, HttpStatus.CREATED);
     }
 
 
     // PUT
 
-    @PutMapping(path = "/itemRarities/{itemRarityId}")
-    public ResponseEntity<ItemRarityDto> uptadeItemRarity(@PathVariable Long itemRarityId, 
-        @RequestBody ItemRarityDto itemRarityDto) {
-            ItemRarity itemRarity = itemService.convertFromItemRarityDto(itemRarityDto);
-            itemRarity.setId(itemRarityId);
-            ItemRarity savedItemRarity = itemService.saveItemRarity(itemRarity);
-            ItemRarityDto savedItemRarityDto = itemService.convertToItemRarityDto(savedItemRarity);
-            return new ResponseEntity<>(savedItemRarityDto, HttpStatus.OK);
+    @PutMapping(path = "/item-categories/{itemCategoryId}")
+    public ResponseEntity<ItemCategoryDto> uptadeItemCategory(
+        @PathVariable Long itemCategoryId, 
+        @RequestBody ItemCategoryDto itemCategoryDto
+    ) {
+
+        ItemCategory itemCategory = itemService.mapFromItemCategoryDto(itemCategoryDto);
+        itemCategory.setId(itemCategoryId);
+        ItemCategory savedItemCategory = itemService.saveItemCategory(itemCategory);
+        ItemCategoryDto savedItemCategoryDto = itemService.mapToItemCategoryDto(savedItemCategory);
+            
+        return new ResponseEntity<>(savedItemCategoryDto, HttpStatus.OK);
     }
 
-    @PutMapping(path = "/itemCategories/{itemCategoryId}")
-    public ResponseEntity<ItemCategoryDto> uptadeItemCategory(@PathVariable Long itemCategoryId, 
-        @RequestBody ItemCategoryDto itemCategoryDto) {
-            ItemCategory itemCategory = itemService.convertFromItemCategoryDto(itemCategoryDto);
-            itemCategory.setId(itemCategoryId);
-            ItemCategory savedItemCategory = itemService.saveItemCategory(itemCategory);
-            ItemCategoryDto savedItemCategoryDto = itemService.convertToItemCategoryDto(savedItemCategory);
-            return new ResponseEntity<>(savedItemCategoryDto, HttpStatus.OK);
+    @PutMapping(path = "/item-rarities/{itemRarityId}")
+    public ResponseEntity<ItemRarityDto> uptadeItemRarity(
+        @PathVariable Long itemRarityId, 
+        @RequestBody ItemRarityDto itemRarityDto
+    ) {
+        ItemRarity itemRarity = itemService.mapFromItemRarityDto(itemRarityDto);
+        itemRarity.setId(itemRarityId);
+        ItemRarity savedItemRarity = itemService.saveItemRarity(itemRarity);
+        ItemRarityDto savedItemRarityDto = itemService.mapToItemRarityDto(savedItemRarity);
+        
+        return new ResponseEntity<>(savedItemRarityDto, HttpStatus.OK);
     }
 
     @PutMapping(path = "/items/{itemId}")
-    public ResponseEntity<ItemDto> uptadeItem(@PathVariable Long itemId, 
-        @RequestBody ItemDto itemDto) {
-            Item item = itemService.convertFromItemDto(itemDto);
-            item.setId(itemId);
-            Item savedItem = itemService.saveItem(item);
-            ItemDto savedItemDto = itemService.convertToItemDto(savedItem);
-            return new ResponseEntity<>(savedItemDto, HttpStatus.OK);
+    public ResponseEntity<ItemDto> uptadeItem(
+        @PathVariable Long itemId, 
+        @RequestBody ItemRequestDto itemRequestDto
+    ) {
+        Item item = itemService.mapFromItemRequestDto(itemRequestDto);
+        item.setId(itemId);
+        Item savedItem = itemService.saveItem(item);
+        ItemDto savedItemDto = itemService.mapToItemDto(savedItem);
+
+        return new ResponseEntity<>(savedItemDto, HttpStatus.OK);
     }
 
 
     // GET
 
-    @GetMapping(path = "/itemRarities")
-    public List<ItemRarityDto> getAllItemRarities() {
-        List<ItemRarity> items = itemService.getAllItemRarities();
-        return items.stream()
-        .map(itemService::convertToItemRarityDto)
-        .collect(Collectors.toList());
-    }
-
-    @GetMapping(path = "/itemCategories")
+    @GetMapping(path = "/item-categories")
     public List<ItemCategoryDto> getAllItemCategories() {
-        List<ItemCategory> items = itemService.getAllItemCategories();
-        return items.stream()
-        .map(itemService::convertToItemCategoryDto)
+
+        List<ItemCategory> itemCategories = itemService.getAllItemCategories();
+
+        List<ItemCategoryDto> itemCategoriesDto = itemCategories.stream()
+        .map(itemService::mapToItemCategoryDto)
         .collect(Collectors.toList());
+
+        return itemCategoriesDto;
     }
     
+    @GetMapping(path = "/item-rarities")
+    public List<ItemRarityDto> getAllItemRarities() {
+
+        List<ItemRarity> itemRarities = itemService.getAllItemRarities();
+
+        List<ItemRarityDto> itemRaritiesDto = itemRarities.stream()
+        .map(itemService::mapToItemRarityDto)
+        .collect(Collectors.toList());
+
+        return itemRaritiesDto;
+    }
+
     @GetMapping(path = "/items")
-    public Page<ItemDto> getAllItems( Pageable pageable,
+    public Page<ItemDto> getAllItems(
+        Pageable pageable,
         @RequestParam(required = false) Long categoryId, 
-        @RequestParam(required = false) Long rarityId) {
+        @RequestParam(required = false) Long rarityId
+    ) {
 
         Page<Item> items;
+        
         if (categoryId != null && rarityId != null) {
             items = itemService.getAllItemsByCategoryAndRarity(pageable, categoryId, rarityId);
         } else if (categoryId != null) {
@@ -128,29 +154,28 @@ public class ItemController {
             items = itemService.getAllItems(pageable);
         }
 
-        return items.map(itemService::convertToItemDto);
+        return items.map(itemService::mapToItemDto);
     }
 
     @GetMapping(path = "/items/{itemId}")
     public ResponseEntity<ItemDto> getItem(@PathVariable Long itemId) {
-        Optional<Item> foundItem = itemService.getItem(itemId);
-        return foundItem.map(item -> {
-            ItemDto itemDto = itemService.convertToItemDto(item);
-            return new ResponseEntity<>(itemDto, HttpStatus.OK);
-        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+        Item foundItem = itemService.getItem(itemId);
+        ItemDto foundItemDto = itemService.mapToItemDto(foundItem); 
+        return new ResponseEntity<>(foundItemDto, HttpStatus.OK);
     }
 
     // DELETE
     
-    @DeleteMapping(path = "/itemRarities/{itemRarityId}")
-    public ResponseEntity deleteItemRarity(@PathVariable Long itemRarityId) {
-        itemService.deleteItemRarity(itemRarityId);
+    @DeleteMapping(path = "/item-categories/{itemCategoryId}")
+    public ResponseEntity deleteItemCategory(@PathVariable Long itemCategoryId) {
+        itemService.deleteItemCategory(itemCategoryId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping(path = "/itemCategories/{itemCategoryId}")
-    public ResponseEntity deleteItemCategory(@PathVariable Long itemCategoryId) {
-        itemService.deleteItemCategory(itemCategoryId);
+    @DeleteMapping(path = "/item-rarities/{itemRarityId}")
+    public ResponseEntity deleteItemRarity(@PathVariable Long itemRarityId) {
+        itemService.deleteItemRarity(itemRarityId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
