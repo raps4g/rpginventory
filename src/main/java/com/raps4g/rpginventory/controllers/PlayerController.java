@@ -26,7 +26,7 @@ public class PlayerController {
     // POST
     
     @PostMapping(path = "/players")
-    public ResponseEntity<PlayerDto> addPlayer(@RequestBody PlayerDto playerDto) {
+    public ResponseEntity<PlayerDto> createPlayer(@RequestBody PlayerDto playerDto) {
 
             Player player = playerService.mapFromPlayerDto(playerDto);
             Player savedPlayer = playerService.savePlayer(player);
@@ -39,7 +39,7 @@ public class PlayerController {
     // PUT
 
     @PutMapping(path = "/players/{playerId}")
-    public ResponseEntity<PlayerDto> uptadePlayer(
+    public ResponseEntity<PlayerDto> updatePlayer(
         @PathVariable Long playerId, 
         @RequestBody PlayerDto playerDto
         ) {

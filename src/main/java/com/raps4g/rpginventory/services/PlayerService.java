@@ -24,8 +24,6 @@ public interface PlayerService {
 
     Player getPlayer(Long playerId);
    
-    List<Player> getAllPlayers();
-    
     Page<Player> getAllPlayers(Pageable pageable);
     
     // Delete

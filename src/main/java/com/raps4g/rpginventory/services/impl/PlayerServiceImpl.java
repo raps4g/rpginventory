@@ -28,9 +28,6 @@ public class PlayerServiceImpl implements PlayerService{
     @Autowired 
     private PlayerRepository playerRepository;
     
-    @Autowired 
-    private InventoryRepository inventoryRepository;
-   
 
     // Mappers
 
@@ -60,16 +57,7 @@ public class PlayerServiceImpl implements PlayerService{
 
     // Get
 
-    @Override
-    public List<Player> getAllPlayers() {
-        return StreamSupport
-            .stream(
-                playerRepository.findAll().spliterator(),
-                false)
-        .collect(Collectors.toList());
-    }
-    
-    @Override
+   @Override
     public Page<Player> getAllPlayers(Pageable pageable) {
         return playerRepository.findAll(pageable);
     }

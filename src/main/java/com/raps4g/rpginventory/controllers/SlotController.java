@@ -30,7 +30,7 @@ public class SlotController {
     // POST
 
     @PostMapping(path = "/slots")
-    public ResponseEntity<SlotDto> addSlot(@RequestBody SlotDto slotDto) {
+    public ResponseEntity<SlotDto> createSlot(@RequestBody SlotDto slotDto) {
         try {
             Slot slot = slotService.convertFromSlotDto(slotDto);
             Slot savedSlot = slotService.saveSlot(slot);

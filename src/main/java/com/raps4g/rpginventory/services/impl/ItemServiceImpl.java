@@ -17,7 +17,7 @@ import com.raps4g.rpginventory.domain.entities.Slot;
 import com.raps4g.rpginventory.domain.entities.dto.ItemCategoryDto;
 import com.raps4g.rpginventory.domain.entities.dto.ItemDto;
 import com.raps4g.rpginventory.domain.entities.dto.ItemRarityDto;
-import com.raps4g.rpginventory.domain.entities.dto.ItemRequestDto;
+import com.raps4g.rpginventory.domain.entities.dto.AddItemDto;
 import com.raps4g.rpginventory.exceptions.ResourceAlreadyExistsException;
 import com.raps4g.rpginventory.exceptions.ResourceNotFoundException;
 import com.raps4g.rpginventory.repositories.ItemCategoryRepository;
@@ -69,7 +69,7 @@ public class ItemServiceImpl implements ItemService{
     }
     
     @Override
-    public Item mapFromItemRequestDto(ItemRequestDto itemRequestDto) {
+    public Item mapFromItemRequestDto(AddItemDto itemRequestDto) {
 
         ItemCategory itemCategory = itemCategoryRepository.findById(itemRequestDto.getItemCategoryId())
             .orElseThrow(() -> new ResourceNotFoundException("Item category with id " + itemRequestDto.getItemCategoryId() + " not found."));
@@ -167,15 +167,6 @@ public class ItemServiceImpl implements ItemService{
         Item foundItem = itemRepository.findById(itemId)
             .orElseThrow(() -> new ResourceNotFoundException("Item with id " + itemId + " not found."));
         return foundItem;
-    }
-
-    @Override
-    public List<Item> getAllItems() {
-        return StreamSupport
-            .stream(
-                itemRepository.findAll().spliterator(),
-                false)
-        .collect(Collectors.toList());
     }
 
     @Override
