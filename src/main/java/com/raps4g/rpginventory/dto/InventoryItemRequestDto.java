@@ -1,4 +1,4 @@
-package com.raps4g.rpginventory.domain.entities.dto;
+package com.raps4g.rpginventory.dto;
 
 import com.raps4g.rpginventory.validation.InventoryItemValidationGroup;
 import com.raps4g.rpginventory.validation.ItemValidationGroup;

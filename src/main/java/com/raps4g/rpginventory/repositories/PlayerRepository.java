@@ -1,6 +1,6 @@
 package com.raps4g.rpginventory.repositories;
 
-import com.raps4g.rpginventory.domain.entities.Player;
+import com.raps4g.rpginventory.model.Player;
 
 import java.util.Optional;
 

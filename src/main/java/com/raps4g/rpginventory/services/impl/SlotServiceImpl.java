@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import com.raps4g.rpginventory.domain.entities.Slot;
-import com.raps4g.rpginventory.domain.entities.dto.SlotDto;
+import com.raps4g.rpginventory.model.Slot;
+import com.raps4g.rpginventory.dto.SlotDto;
 import com.raps4g.rpginventory.exceptions.ResourceAlreadyExistsException;
 import com.raps4g.rpginventory.repositories.ItemRepository;
 import com.raps4g.rpginventory.repositories.SlotRepository;

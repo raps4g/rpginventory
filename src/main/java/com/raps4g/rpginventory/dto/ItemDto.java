@@ -1,4 +1,4 @@
-package com.raps4g.rpginventory.domain.entities.dto;
+package com.raps4g.rpginventory.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

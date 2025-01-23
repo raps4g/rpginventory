@@ -3,8 +3,8 @@ package com.raps4g.rpginventory.services;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.raps4g.rpginventory.domain.entities.Player;
-import com.raps4g.rpginventory.domain.entities.dto.PlayerDto;
+import com.raps4g.rpginventory.model.Player;
+import com.raps4g.rpginventory.dto.PlayerDto;
 
 public interface PlayerService {
 

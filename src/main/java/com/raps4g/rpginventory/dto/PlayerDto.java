@@ -1,5 +1,4 @@
-package com.raps4g.rpginventory.domain.entities.dto;
-
+package com.raps4g.rpginventory.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -11,9 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ItemCategoryDto {
+public class PlayerDto {
     
     private Long id;
     @NotNull(message = "'name' field is required.")
     private String name;
+    private Long gold;
+
 }

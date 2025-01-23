@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.raps4g.rpginventory.domain.entities.Item;
-import com.raps4g.rpginventory.domain.entities.ItemCategory;
-import com.raps4g.rpginventory.domain.entities.ItemRarity;
-import com.raps4g.rpginventory.domain.entities.dto.ItemCategoryDto;
-import com.raps4g.rpginventory.domain.entities.dto.ItemDto;
-import com.raps4g.rpginventory.domain.entities.dto.ItemRarityDto;
-import com.raps4g.rpginventory.domain.entities.dto.ItemRequestDto;
+import com.raps4g.rpginventory.model.Item;
+import com.raps4g.rpginventory.model.ItemCategory;
+import com.raps4g.rpginventory.model.ItemRarity;
+import com.raps4g.rpginventory.dto.ItemCategoryDto;
+import com.raps4g.rpginventory.dto.ItemDto;
+import com.raps4g.rpginventory.dto.ItemRarityDto;
+import com.raps4g.rpginventory.dto.ItemRequestDto;
 import com.raps4g.rpginventory.services.ItemService;
 
 import jakarta.validation.Valid;

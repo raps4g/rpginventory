@@ -5,13 +5,13 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.raps4g.rpginventory.domain.entities.Item;
-import com.raps4g.rpginventory.domain.entities.ItemCategory;
-import com.raps4g.rpginventory.domain.entities.ItemRarity;
-import com.raps4g.rpginventory.domain.entities.dto.ItemCategoryDto;
-import com.raps4g.rpginventory.domain.entities.dto.ItemDto;
-import com.raps4g.rpginventory.domain.entities.dto.ItemRarityDto;
-import com.raps4g.rpginventory.domain.entities.dto.ItemRequestDto;
+import com.raps4g.rpginventory.model.Item;
+import com.raps4g.rpginventory.model.ItemCategory;
+import com.raps4g.rpginventory.model.ItemRarity;
+import com.raps4g.rpginventory.dto.ItemCategoryDto;
+import com.raps4g.rpginventory.dto.ItemDto;
+import com.raps4g.rpginventory.dto.ItemRarityDto;
+import com.raps4g.rpginventory.dto.ItemRequestDto;
 
 public interface ItemService {
 

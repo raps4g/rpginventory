@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.raps4g.rpginventory.domain.entities.Player;
-import com.raps4g.rpginventory.domain.entities.dto.PlayerDto;
+import com.raps4g.rpginventory.model.Player;
+import com.raps4g.rpginventory.dto.PlayerDto;
 import com.raps4g.rpginventory.services.PlayerService;
 
 import jakarta.validation.Valid;

@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import com.raps4g.rpginventory.domain.entities.EquipmentItem;
+import com.raps4g.rpginventory.model.EquipmentItem;
 
 @Repository
 public interface EquipmentItemRepository extends CrudRepository<EquipmentItem, Long>, 

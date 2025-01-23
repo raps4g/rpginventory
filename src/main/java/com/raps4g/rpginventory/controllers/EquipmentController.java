@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.raps4g.rpginventory.domain.entities.EquipmentItem;
-import com.raps4g.rpginventory.domain.entities.dto.EquipmentItemDto;
-import com.raps4g.rpginventory.domain.entities.dto.InventoryItemRequestDto;
+import com.raps4g.rpginventory.model.EquipmentItem;
+import com.raps4g.rpginventory.dto.EquipmentItemDto;
+import com.raps4g.rpginventory.dto.InventoryItemRequestDto;
 import com.raps4g.rpginventory.services.EquipmentService;
 import com.raps4g.rpginventory.validation.InventoryItemValidationGroup;
 

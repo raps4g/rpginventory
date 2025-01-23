@@ -2,8 +2,8 @@ package com.raps4g.rpginventory.services;
 
 import java.util.List;
 
-import com.raps4g.rpginventory.domain.entities.Slot;
-import com.raps4g.rpginventory.domain.entities.dto.SlotDto;
+import com.raps4g.rpginventory.model.Slot;
+import com.raps4g.rpginventory.dto.SlotDto;
 
 public interface SlotService {
 

@@ -1,4 +1,4 @@
-package com.raps4g.rpginventory.domain.entities;
+package com.raps4g.rpginventory.dto;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,18 +15,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-public class InventoryItem {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "inventory_items_seq")
+public class EquipmentItemDto {
+
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "inventory_id", nullable = false)
-    private Inventory inventory;
+    private PlayerDto player;
 
-    @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false)
-    private Item item;
+    private InventoryItemResponseDto inventoryItem;
+
+    private SlotDto slot;
 }

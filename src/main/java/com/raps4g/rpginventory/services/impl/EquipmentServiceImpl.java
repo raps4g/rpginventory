@@ -6,9 +6,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.raps4g.rpginventory.domain.entities.EquipmentItem;
-import com.raps4g.rpginventory.domain.entities.InventoryItem;
-import com.raps4g.rpginventory.domain.entities.dto.EquipmentItemDto;
+import com.raps4g.rpginventory.model.EquipmentItem;
+import com.raps4g.rpginventory.model.InventoryItem;
+import com.raps4g.rpginventory.dto.EquipmentItemDto;
 import com.raps4g.rpginventory.exceptions.ResourceNotFoundException;
 import com.raps4g.rpginventory.exceptions.SlotAlreadyInUseException;
 import com.raps4g.rpginventory.repositories.EquipmentItemRepository;

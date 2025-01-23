@@ -7,4 +7,3 @@ public class SlotAlreadyInUseException extends RuntimeException {
     }
 
 }
-

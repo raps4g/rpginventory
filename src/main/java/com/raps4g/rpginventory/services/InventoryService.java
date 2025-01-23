@@ -2,11 +2,11 @@ package com.raps4g.rpginventory.services;
 
 import java.util.List;
 
-import com.raps4g.rpginventory.domain.entities.Inventory;
-import com.raps4g.rpginventory.domain.entities.InventoryItem;
-import com.raps4g.rpginventory.domain.entities.Player;
-import com.raps4g.rpginventory.domain.entities.dto.InventoryDto;
-import com.raps4g.rpginventory.domain.entities.dto.InventoryItemResponseDto;
+import com.raps4g.rpginventory.model.Inventory;
+import com.raps4g.rpginventory.model.InventoryItem;
+import com.raps4g.rpginventory.model.Player;
+import com.raps4g.rpginventory.dto.InventoryDto;
+import com.raps4g.rpginventory.dto.InventoryItemResponseDto;
 
 public interface InventoryService {
 

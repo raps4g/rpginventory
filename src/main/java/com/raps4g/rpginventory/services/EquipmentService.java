@@ -2,8 +2,8 @@ package com.raps4g.rpginventory.services;
 
 import java.util.List;
 
-import com.raps4g.rpginventory.domain.entities.EquipmentItem;
-import com.raps4g.rpginventory.domain.entities.dto.EquipmentItemDto;
+import com.raps4g.rpginventory.model.EquipmentItem;
+import com.raps4g.rpginventory.dto.EquipmentItemDto;
 
 public interface EquipmentService {
 

@@ -1,7 +1,7 @@
 package com.raps4g.rpginventory.repositories;
 
-import com.raps4g.rpginventory.domain.entities.InventoryItem;
-import com.raps4g.rpginventory.domain.entities.ItemCategory;
+import com.raps4g.rpginventory.model.InventoryItem;
+import com.raps4g.rpginventory.model.ItemCategory;
 
 import java.util.List;
 import java.util.Optional;

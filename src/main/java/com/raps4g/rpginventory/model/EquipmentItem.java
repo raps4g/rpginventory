@@ -1,4 +1,4 @@
-package com.raps4g.rpginventory.domain.entities;
+package com.raps4g.rpginventory.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

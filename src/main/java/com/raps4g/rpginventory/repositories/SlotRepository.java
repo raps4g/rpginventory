@@ -1,6 +1,6 @@
 package com.raps4g.rpginventory.repositories;
 
-import com.raps4g.rpginventory.domain.entities.Slot;
+import com.raps4g.rpginventory.model.Slot;
 
 import java.util.Optional;
 
