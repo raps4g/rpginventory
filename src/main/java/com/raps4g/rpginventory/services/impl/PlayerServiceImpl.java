@@ -1,11 +1,8 @@
 package com.raps4g.rpginventory.services.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,6 +11,7 @@ import com.raps4g.rpginventory.domain.entities.Player;
 import com.raps4g.rpginventory.domain.entities.dto.PlayerDto;
 import com.raps4g.rpginventory.exceptions.ResourceAlreadyExistsException;
 import com.raps4g.rpginventory.exceptions.ResourceNotFoundException;
+import com.raps4g.rpginventory.repositories.EquipmentItemRepository;
 import com.raps4g.rpginventory.repositories.InventoryRepository;
 import com.raps4g.rpginventory.repositories.PlayerRepository;
 import com.raps4g.rpginventory.services.PlayerService;
@@ -27,7 +25,12 @@ public class PlayerServiceImpl implements PlayerService{
     
     @Autowired 
     private PlayerRepository playerRepository;
-    
+   
+    @Autowired
+    private InventoryRepository inventoryRepository;
+
+    @Autowired
+    private EquipmentItemRepository equipmentItemRepository;
 
     // Mappers
 
@@ -47,8 +50,8 @@ public class PlayerServiceImpl implements PlayerService{
     @Override
     public Player savePlayer(Player player) {
 
-        if (playerRepository.findByName(player.getName()).isPresent()) {
-            throw new ResourceAlreadyExistsException("Player named \"" + player.getName() + "\" already exists.");
+        if (playerRepository.existsByName(player.getName()) && player.getId() == null) {
+            throw new ResourceAlreadyExistsException("Player named '" + player.getName() + "' already exists.");
         }
         
         return playerRepository.save(player);
@@ -73,6 +76,16 @@ public class PlayerServiceImpl implements PlayerService{
 
     @Override
     public void deletePlayer(Long playerId) {
+        
+        if(inventoryRepository.existsByPlayerId(playerId)) {
+            throw new DataIntegrityViolationException("Player with id " 
+                + playerId + " cannot be deleted because it exists an inventory associated.");
+        }
+
+        if(equipmentItemRepository.existsByPlayerId(playerId)) {
+            throw new DataIntegrityViolationException("Player with id " 
+                + playerId + " cannot be deleted because it has items equipped.");
+        }
         playerRepository.deleteById(playerId);
     }
     

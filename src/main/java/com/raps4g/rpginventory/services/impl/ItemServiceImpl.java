@@ -6,6 +6,7 @@ import java.util.stream.StreamSupport;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,10 @@ import com.raps4g.rpginventory.domain.entities.Slot;
 import com.raps4g.rpginventory.domain.entities.dto.ItemCategoryDto;
 import com.raps4g.rpginventory.domain.entities.dto.ItemDto;
 import com.raps4g.rpginventory.domain.entities.dto.ItemRarityDto;
-import com.raps4g.rpginventory.domain.entities.dto.AddItemDto;
+import com.raps4g.rpginventory.domain.entities.dto.ItemRequestDto;
 import com.raps4g.rpginventory.exceptions.ResourceAlreadyExistsException;
 import com.raps4g.rpginventory.exceptions.ResourceNotFoundException;
+import com.raps4g.rpginventory.repositories.InventoryItemRepository;
 import com.raps4g.rpginventory.repositories.ItemCategoryRepository;
 import com.raps4g.rpginventory.repositories.ItemRarityRepository;
 import com.raps4g.rpginventory.repositories.ItemRepository;
@@ -41,6 +43,9 @@ public class ItemServiceImpl implements ItemService{
     
     @Autowired
     private SlotRepository slotRepository;
+
+    @Autowired
+    private InventoryItemRepository inventoryItemRepository;
     
     @Autowired
     private ModelMapper modelMapper;
@@ -69,7 +74,7 @@ public class ItemServiceImpl implements ItemService{
     }
     
     @Override
-    public Item mapFromItemRequestDto(AddItemDto itemRequestDto) {
+    public Item mapFromItemRequestDto(ItemRequestDto itemRequestDto) {
 
         ItemCategory itemCategory = itemCategoryRepository.findById(itemRequestDto.getItemCategoryId())
             .orElseThrow(() -> new ResourceNotFoundException("Item category with id " + itemRequestDto.getItemCategoryId() + " not found."));
@@ -103,27 +108,25 @@ public class ItemServiceImpl implements ItemService{
     @Override
     public ItemCategory saveItemCategory(ItemCategory itemCategory) {
 
-        if (itemCategoryRepository.findByName(itemCategory.getName()).isPresent()) {
-            throw new ResourceAlreadyExistsException("Item category named \""+ itemCategory.getName() + "\" already exists.");
+        if (itemCategoryRepository.existsByName(itemCategory.getName()) && itemCategory.getId() == null) {
+            throw new ResourceAlreadyExistsException("Item category with name '" + itemCategory.getName() + "' already exists.");
         }
         return itemCategoryRepository.save(itemCategory);
-
     }
 
     @Override
     public ItemRarity saveItemRarity(ItemRarity itemRarity) {
 
-        if (itemRarityRepository.findByName(itemRarity.getName()).isPresent()) {
-            throw new ResourceAlreadyExistsException("Item rarity named \"" + itemRarity.getName() + "\" already exists.");
+        if (itemRarityRepository.existsByName(itemRarity.getName()) && itemRarity.getId() == null) {
+            throw new ResourceAlreadyExistsException("Item rarity with name '" + itemRarity.getName() + "' already exists.");
         }
         return itemRarityRepository.save(itemRarity);
-
     }
    
     @Override
     public Item saveItem(Item item) {
-        if (itemRepository.findByName(item.getName()).isPresent()) {
-            throw new ResourceAlreadyExistsException("Item named \"" + item.getName() + "\" already exists.");
+        if (itemRepository.existsByName(item.getName()) && item.getId() == null) {
+            throw new ResourceAlreadyExistsException("Item with name '" + item.getName() + "' already exists.");
         }
 
         if (item.getItemCategory().getId() == null) {
@@ -193,17 +196,29 @@ public class ItemServiceImpl implements ItemService{
     // Delete
 
     @Override
-    public void deleteItemCategory(Long itemId) {
-        itemCategoryRepository.deleteById(itemId);
+    public void deleteItemCategory(Long itemCategoryId) {
+        if (itemRepository.existsByItemCategoryId(itemCategoryId)) {
+            throw new DataIntegrityViolationException("Item category with id " 
+                + itemCategoryId + " cannot be deleted because it is referenced by one or more items.");
+        }
+        itemCategoryRepository.deleteById(itemCategoryId);
     }
     
     @Override
-    public void deleteItemRarity(Long itemId) {
-        itemRarityRepository.deleteById(itemId);
+    public void deleteItemRarity(Long itemRarityId) {
+        if (itemRepository.existsByItemRarityId(itemRarityId)) {
+            throw new DataIntegrityViolationException("Item rarity with id " 
+                + itemRarityId + " cannot be deleted because it is referenced by one or more items.");
+        }
+        itemRarityRepository.deleteById(itemRarityId);
     }
 
     @Override
     public void deleteItem(Long itemId) {
+        if (inventoryItemRepository.existsByItemId(itemId)) {
+            throw new DataIntegrityViolationException("Item with id " 
+                + itemId + " cannot be deleted because it is present in one or more inventories.");
+        }
         itemRepository.deleteById(itemId);
     }
 }

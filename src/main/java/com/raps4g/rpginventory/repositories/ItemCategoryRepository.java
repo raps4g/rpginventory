@@ -12,4 +12,6 @@ public interface ItemCategoryRepository extends CrudRepository<ItemCategory, Lon
 
     Optional<ItemCategory> findByName(String name);
 
+    boolean existsByName(String name);
+
 }

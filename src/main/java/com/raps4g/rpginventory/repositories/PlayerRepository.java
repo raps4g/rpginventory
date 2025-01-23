@@ -14,4 +14,5 @@ public interface PlayerRepository extends CrudRepository<Player, Long>,
     
     Optional<Player> findByName(String name);
 
+    boolean existsByName(String name);
 }

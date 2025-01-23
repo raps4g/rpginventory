@@ -16,4 +16,6 @@ public interface InventoryRepository extends CrudRepository<Inventory, Long>,
     Optional<Inventory> findByPlayer(Player player);
 
     Optional<Inventory> findByPlayerId(Long playerId);
+
+    boolean existsByPlayerId(Long playerId);
 }

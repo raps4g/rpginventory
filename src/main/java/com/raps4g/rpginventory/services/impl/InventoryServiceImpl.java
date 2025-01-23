@@ -2,13 +2,11 @@ package com.raps4g.rpginventory.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.raps4g.rpginventory.domain.entities.Inventory;
@@ -21,6 +19,7 @@ import com.raps4g.rpginventory.domain.entities.dto.ItemDto;
 import com.raps4g.rpginventory.exceptions.InsufficientGoldException;
 import com.raps4g.rpginventory.exceptions.ResourceAlreadyExistsException;
 import com.raps4g.rpginventory.exceptions.ResourceNotFoundException;
+import com.raps4g.rpginventory.repositories.EquipmentItemRepository;
 import com.raps4g.rpginventory.repositories.InventoryItemRepository;
 import com.raps4g.rpginventory.repositories.InventoryRepository;
 import com.raps4g.rpginventory.repositories.ItemRepository;
@@ -47,7 +46,9 @@ public class InventoryServiceImpl implements InventoryService{
     
     @Autowired
     private PlayerRepository playerRepository; 
-    
+   
+    @Autowired
+    private EquipmentItemRepository equipmentItemRepository;
 
     // Mappers
 
@@ -66,7 +67,7 @@ public class InventoryServiceImpl implements InventoryService{
         InventoryDto inventoryDto = InventoryDto.builder()
         .id(inventory.getId())
         .playerId(inventory.getPlayer().getId())
-        .inventoryItemIds(
+        .inventoryItemIds( inventory.getInventoryItems() == null ? new ArrayList<>() :
             inventory.getInventoryItems()
                     .stream()
                     .map(InventoryItem::getId)
@@ -82,7 +83,11 @@ public class InventoryServiceImpl implements InventoryService{
 
     @Override
     public InventoryItem addItemToInventory(Long playerId, Long itemId) {
-        
+       
+        if (!playerRepository.existsById(playerId)) {
+            throw new ResourceNotFoundException("Player with id " + playerId + " not found.");
+        }
+
         Inventory playerInventory = inventoryRepository.findByPlayerId(playerId)
             .orElseThrow(() -> new ResourceNotFoundException("Inventory for playerId " + playerId + " not found."));
 
@@ -110,7 +115,6 @@ public class InventoryServiceImpl implements InventoryService{
         if (player.getGold() < item.getValue()) {
             throw new InsufficientGoldException("Player with id " + playerId + "does not have sufficient gold for item with id " + item.getId() + ".");
         }
-
         
         Inventory playerInventory = inventoryRepository.findByPlayerId(playerId)
             .orElseThrow(() -> new ResourceNotFoundException("Inventory for playerId " + playerId + " not found."));
@@ -130,9 +134,10 @@ public class InventoryServiceImpl implements InventoryService{
     public Inventory createPlayerInventory(Long playerId) {
         Inventory inventory = new Inventory();
 
-        if (inventoryRepository.findByPlayerId(playerId).isPresent()) {
+        if (inventoryRepository.existsByPlayerId(playerId)) {
             throw new ResourceAlreadyExistsException("An inventory already exists for player id " + playerId + ".");
         }
+
         Player player = playerRepository.findById(playerId)
             .orElseThrow(() -> new ResourceNotFoundException("Player with id " + playerId + " not found."));
         inventory.setPlayer(player);
@@ -145,6 +150,10 @@ public class InventoryServiceImpl implements InventoryService{
 
     @Override
     public List<InventoryItem> getAllItemsInPlayerInventory(Long playerId) {
+        if (!playerRepository.existsById(playerId)) {
+            throw new ResourceNotFoundException("Player with id " + playerId + " not found.");
+        }
+
         Inventory foundInventory = inventoryRepository.findByPlayerId(playerId)
         .orElseThrow(() -> new ResourceNotFoundException("Inventory for playerId " + playerId + " not found."));
 
@@ -154,6 +163,10 @@ public class InventoryServiceImpl implements InventoryService{
 
     @Override
     public Inventory getPlayerInventory(Long playerId) {
+        if (!playerRepository.existsById(playerId)) {
+            throw new ResourceNotFoundException("Player with id " + playerId + " not found.");
+        }
+
         Inventory foundInventory = inventoryRepository.findByPlayerId(playerId)
             .orElseThrow(() -> new ResourceNotFoundException("Inventory for playerId " + playerId + " not found."));
 
@@ -164,16 +177,23 @@ public class InventoryServiceImpl implements InventoryService{
     // Delete
 
     @Override
-    public void removeItemFromInventory(Long playerId, Long inventoryItemId) {
+    public void removeItemFromInventory(Long playerId, Long inventoryItemId) throws IllegalAccessException {
 
-        Inventory foundInventory = inventoryRepository.findById(playerId)
-        .orElseThrow(() -> new ResourceNotFoundException(""));
+        if (!playerRepository.existsById(playerId)) {
+            throw new ResourceNotFoundException("Player with id " + playerId + " not found.");
+        }
+        
+        InventoryItem itemToRemove = inventoryItemRepository.findById(inventoryItemId)
+            .orElseThrow(() -> new ResourceNotFoundException("Inventory item with id " + inventoryItemId + " not found."));
 
-        InventoryItem itemToRemove = foundInventory.getInventoryItems().stream()
-        .filter(inventoryItem -> inventoryItem.getId().equals(inventoryItemId))
-        .findFirst().get();
+        if (playerId != itemToRemove.getInventory().getPlayer().getId()) {
+            throw new IllegalAccessException("Inventory item with id " + inventoryItemId + " cannot be removed by player with id " + playerId + ".");
+        }
 
-        foundInventory.getInventoryItems().remove(itemToRemove);
+        if(equipmentItemRepository.existsByInventoryItemId(inventoryItemId)) {
+            throw new DataIntegrityViolationException("Inventory item with id " + inventoryItemId + " cannot be removed because it is equiped by the player.");
+        }
+
         inventoryItemRepository.delete(itemToRemove);
     }
 
@@ -181,26 +201,33 @@ public class InventoryServiceImpl implements InventoryService{
     @Transactional
     public void clearPlayerInventoryItems(Long playerId) {
 
+        if (!playerRepository.existsById(playerId)) {
+            throw new ResourceNotFoundException("Player with id " + playerId + " not found.");
+        }
+        
         Inventory foundInventory = inventoryRepository.findById(playerId)
-        .orElseThrow(() -> new ResourceNotFoundException(""));
+            .orElseThrow(() -> new ResourceNotFoundException("Inventory for playerId " + playerId + " not found."));
             inventoryItemRepository.deleteByInventoryId(foundInventory.getId());
         }
     
     @Override
-    public Player sellItem(Long playerId, Long inventoryItemId) {
+    public Player sellItem(Long playerId, Long inventoryItemId) throws IllegalAccessException {
         
         Player player = playerRepository.findById(playerId)
             .orElseThrow(() -> new ResourceNotFoundException("Player with id " + playerId + " not found."));
         
-        Inventory foundInventory = inventoryRepository.findById(playerId)
-            .orElseThrow(() -> new ResourceNotFoundException(""));
+        InventoryItem itemToRemove = inventoryItemRepository.findById(inventoryItemId)
+            .orElseThrow(() -> new ResourceNotFoundException("Inventory item with id " + inventoryItemId + " not found."));
 
-        InventoryItem itemToRemove = foundInventory.getInventoryItems().stream()
-        .filter(inventoryItem -> inventoryItem.getId().equals(inventoryItemId))
-        .findFirst().orElseThrow(() -> new ResourceNotFoundException("Inventory Item with id " + inventoryItemId + " not found."));
+        if (playerId != itemToRemove.getInventory().getPlayer().getId()) {
+            throw new IllegalAccessException("Inventory item with id " + inventoryItemId + " cannot be sold by player with id " + playerId + ".");
+        }
 
+        if(equipmentItemRepository.existsByInventoryItemId(inventoryItemId)) {
+            throw new DataIntegrityViolationException("Inventory item with id " + inventoryItemId + " cannot be sold because it is equiped by the player.");
+        }
+        
         player.setGold(player.getGold() + itemToRemove.getItem().getValue());
-        foundInventory.getInventoryItems().remove(itemToRemove);
         
         playerRepository.save(player);
         inventoryItemRepository.delete(itemToRemove);
@@ -210,8 +237,17 @@ public class InventoryServiceImpl implements InventoryService{
     
     @Override
     public void deletePlayerInventory(Long playerId) {
+        if (!playerRepository.existsById(playerId)) {
+            throw new ResourceNotFoundException("Player with id " + playerId + " not found.");
+        }
+        
         Inventory playerInventory = inventoryRepository.findByPlayerId(playerId)
             .orElseThrow(() -> new ResourceNotFoundException("Inventory for playerId " + playerId + " not found."));
+        
+        if (inventoryItemRepository.existsByInventoryId(playerInventory.getId())) {
+            throw new DataIntegrityViolationException("Inventory for player with id " + playerId + " cannot be deleted because it has one or more items in it.");
+        }
+
         inventoryRepository.delete(playerInventory); 
     }
 }

@@ -5,28 +5,31 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.raps4g.rpginventory.domain.entities.Slot;
 import com.raps4g.rpginventory.domain.entities.dto.SlotDto;
 import com.raps4g.rpginventory.exceptions.ResourceAlreadyExistsException;
+import com.raps4g.rpginventory.repositories.ItemRepository;
 import com.raps4g.rpginventory.repositories.SlotRepository;
 import com.raps4g.rpginventory.services.SlotService;
 
 
 @Service
 public class SlotServiceImpl implements SlotService{
-   
+  
+    @Autowired
     private ModelMapper modelMapper;
+    
+    @Autowired
     private SlotRepository slotRepository;
 
+    @Autowired
+    private ItemRepository itemRepository;
 
-    public SlotServiceImpl( SlotRepository slotRepository,
-                ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-        this.slotRepository = slotRepository;
-    }
-    
+
     // Mappers
 
     @Override
@@ -43,8 +46,8 @@ public class SlotServiceImpl implements SlotService{
 
     @Override
     public Slot saveSlot(Slot slot) {
-        if (slotRepository.findByName(slot.getName()).isPresent()) {
-            throw new ResourceAlreadyExistsException("Slot named \"" + slot.getName() + "\" already exists.");
+        if (slotRepository.existsByName(slot.getName()) && slot.getId() == null) {
+            throw new ResourceAlreadyExistsException("Slot with name '" + slot.getName() + "' already exists.");
         }
         return slotRepository.save(slot);
     }
@@ -61,11 +64,13 @@ public class SlotServiceImpl implements SlotService{
     }
 
     // Delete
-    // placeholders, this funcitons should manage cases where slots, categories,
-    // or rarities are referenced in other objects.
 
     @Override
     public void deleteSlot(Long slotId) {
+        if (itemRepository.existsByValidSlotId(slotId)) {
+            throw new DataIntegrityViolationException("Slot with id " 
+                + slotId + " cannot be deleted because it is referenced by one or more items.");
+        }
         slotRepository.deleteById(slotId);
     }
     

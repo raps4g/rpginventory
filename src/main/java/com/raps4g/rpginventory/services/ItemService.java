@@ -11,7 +11,7 @@ import com.raps4g.rpginventory.domain.entities.ItemRarity;
 import com.raps4g.rpginventory.domain.entities.dto.ItemCategoryDto;
 import com.raps4g.rpginventory.domain.entities.dto.ItemDto;
 import com.raps4g.rpginventory.domain.entities.dto.ItemRarityDto;
-import com.raps4g.rpginventory.domain.entities.dto.AddItemDto;
+import com.raps4g.rpginventory.domain.entities.dto.ItemRequestDto;
 
 public interface ItemService {
 
@@ -25,7 +25,7 @@ public interface ItemService {
 
     ItemRarityDto mapToItemRarityDto(ItemRarity itemRarity);
 
-    Item mapFromItemRequestDto(AddItemDto itemRequestDto);
+    Item mapFromItemRequestDto(ItemRequestDto itemRequestDto);
 
     ItemDto mapToItemDto(Item item);
 

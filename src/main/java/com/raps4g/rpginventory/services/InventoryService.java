@@ -2,9 +2,6 @@ package com.raps4g.rpginventory.services;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import com.raps4g.rpginventory.domain.entities.Inventory;
 import com.raps4g.rpginventory.domain.entities.InventoryItem;
 import com.raps4g.rpginventory.domain.entities.Player;
@@ -38,9 +35,9 @@ public interface InventoryService {
     
     // Delete
 
-    void removeItemFromInventory(Long playerId, Long inventoryItemId);
+    void removeItemFromInventory(Long playerId, Long inventoryItemId) throws IllegalAccessException;
     
-    Player sellItem(Long playerId, Long inventoryItemId);
+    Player sellItem(Long playerId, Long inventoryItemId) throws IllegalAccessException;
     
     void clearPlayerInventoryItems(Long playerId);
     

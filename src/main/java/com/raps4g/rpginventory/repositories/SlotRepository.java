@@ -12,4 +12,6 @@ public interface SlotRepository extends CrudRepository<Slot, Long>{
     
     Optional<Slot> findByName(String name);
 
+    boolean existsByName(String name);
+
 }

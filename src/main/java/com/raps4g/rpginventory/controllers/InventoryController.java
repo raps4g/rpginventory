@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,10 @@ import com.raps4g.rpginventory.domain.entities.dto.InventoryItemResponseDto;
 import com.raps4g.rpginventory.domain.entities.dto.PlayerDto;
 import com.raps4g.rpginventory.services.InventoryService;
 import com.raps4g.rpginventory.services.PlayerService;
+import com.raps4g.rpginventory.validation.InventoryItemValidationGroup;
+import com.raps4g.rpginventory.validation.ItemValidationGroup;
+
+import jakarta.validation.Valid;
 
 @RestController
 public class InventoryController {
@@ -45,7 +50,7 @@ public class InventoryController {
     @PostMapping(path = "/players/{playerId}/inventory/items")
     public ResponseEntity<InventoryItemResponseDto> addItemToInventory(
         @PathVariable Long playerId, 
-        @RequestBody InventoryItemRequestDto inventoryItemDto
+        @Validated(ItemValidationGroup.class) @RequestBody InventoryItemRequestDto inventoryItemDto
     ) {
         Long itemId = inventoryItemDto.getItemId();
         InventoryItem addedInventoryItem = inventoryService.addItemToInventory(playerId, itemId);
@@ -57,7 +62,7 @@ public class InventoryController {
     @PostMapping(path = "/players/{playerId}/inventory/items/buy")
     public ResponseEntity<InventoryItemResponseDto> buyItem(
         @PathVariable Long playerId, 
-        @RequestBody InventoryItemRequestDto inventoryItemDto
+        @Validated(ItemValidationGroup.class) @RequestBody InventoryItemRequestDto inventoryItemDto
     ) {
 
         Long itemId = inventoryItemDto.getItemId();
@@ -71,8 +76,8 @@ public class InventoryController {
     @PostMapping(path = "/players/{playerId}/inventory/items/sell")
     public ResponseEntity<PlayerDto> sellItem(
         @PathVariable Long playerId, 
-        @RequestBody InventoryItemRequestDto inventoryItemDto
-    ) {
+        @Validated(InventoryItemValidationGroup.class) @RequestBody InventoryItemRequestDto inventoryItemDto
+    ) throws IllegalAccessException {
         
         Long inventoryItemId = inventoryItemDto.getInventoryItemId();
         Player player = inventoryService.sellItem(playerId, inventoryItemId);
@@ -108,9 +113,9 @@ public class InventoryController {
     @DeleteMapping(path = "/players/{playerId}/inventory/items")
     public ResponseEntity removeItemFromInventory(
         @PathVariable Long playerId, 
-        @RequestBody InventoryItemRequestDto inventoryItemDto
-    ) {
-        
+        @Validated(InventoryItemValidationGroup.class) @RequestBody InventoryItemRequestDto inventoryItemDto
+    ) throws IllegalAccessException {
+
         Long inventoryItemId = inventoryItemDto.getInventoryItemId();
         inventoryService.removeItemFromInventory(playerId, inventoryItemId);
 

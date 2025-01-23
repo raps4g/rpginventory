@@ -23,8 +23,10 @@ import com.raps4g.rpginventory.domain.entities.ItemRarity;
 import com.raps4g.rpginventory.domain.entities.dto.ItemCategoryDto;
 import com.raps4g.rpginventory.domain.entities.dto.ItemDto;
 import com.raps4g.rpginventory.domain.entities.dto.ItemRarityDto;
-import com.raps4g.rpginventory.domain.entities.dto.AddItemDto;
+import com.raps4g.rpginventory.domain.entities.dto.ItemRequestDto;
 import com.raps4g.rpginventory.services.ItemService;
+
+import jakarta.validation.Valid;
 
 @RestController
 public class ItemController {
@@ -35,8 +37,8 @@ public class ItemController {
 
     // POST
 
-    @PostMapping(path = "/item-categories")
-    public ResponseEntity<ItemCategoryDto> createItemCategory(@RequestBody ItemCategoryDto itemCategoryDto) {
+    @PostMapping(path = "/items/categories")
+    public ResponseEntity<ItemCategoryDto> createItemCategory(@Valid @RequestBody ItemCategoryDto itemCategoryDto) {
 
         ItemCategory itemCategory = itemService.mapFromItemCategoryDto(itemCategoryDto);
         ItemCategory savedItemCategory = itemService.saveItemCategory(itemCategory);
@@ -45,8 +47,8 @@ public class ItemController {
         return new ResponseEntity<>(savedItemCategoryDto, HttpStatus.CREATED);
     }
     
-    @PostMapping(path = "/item-rarities")
-    public ResponseEntity<ItemRarityDto> createItemRarity(@RequestBody ItemRarityDto itemRarityDto) {
+    @PostMapping(path = "/items/rarities")
+    public ResponseEntity<ItemRarityDto> createItemRarity(@Valid @RequestBody ItemRarityDto itemRarityDto) {
 
         ItemRarity itemRarity = itemService.mapFromItemRarityDto(itemRarityDto);
         ItemRarity savedItemRarity = itemService.saveItemRarity(itemRarity);
@@ -56,7 +58,7 @@ public class ItemController {
     }
     
     @PostMapping(path = "/items")
-    public ResponseEntity<ItemDto> createItem(@RequestBody AddItemDto itemRequestDto) {
+    public ResponseEntity<ItemDto> createItem(@Valid @RequestBody ItemRequestDto itemRequestDto) {
 
             Item item = itemService.mapFromItemRequestDto(itemRequestDto);
             Item savedItem = itemService.saveItem(item);
@@ -68,10 +70,10 @@ public class ItemController {
 
     // PUT
 
-    @PutMapping(path = "/item-categories/{itemCategoryId}")
+    @PutMapping(path = "/items/categories/{itemCategoryId}")
     public ResponseEntity<ItemCategoryDto> updateItemCategory(
         @PathVariable Long itemCategoryId, 
-        @RequestBody ItemCategoryDto itemCategoryDto
+        @Valid @RequestBody ItemCategoryDto itemCategoryDto
     ) {
 
         ItemCategory itemCategory = itemService.mapFromItemCategoryDto(itemCategoryDto);
@@ -82,10 +84,10 @@ public class ItemController {
         return new ResponseEntity<>(savedItemCategoryDto, HttpStatus.OK);
     }
 
-    @PutMapping(path = "/item-rarities/{itemRarityId}")
+    @PutMapping(path = "/items/rarities/{itemRarityId}")
     public ResponseEntity<ItemRarityDto> updateItemRarity(
         @PathVariable Long itemRarityId, 
-        @RequestBody ItemRarityDto itemRarityDto
+        @Valid @RequestBody ItemRarityDto itemRarityDto
     ) {
         ItemRarity itemRarity = itemService.mapFromItemRarityDto(itemRarityDto);
         itemRarity.setId(itemRarityId);
@@ -98,7 +100,7 @@ public class ItemController {
     @PutMapping(path = "/items/{itemId}")
     public ResponseEntity<ItemDto> updateItem(
         @PathVariable Long itemId, 
-        @RequestBody AddItemDto itemRequestDto
+        @Valid @RequestBody ItemRequestDto itemRequestDto
     ) {
         Item item = itemService.mapFromItemRequestDto(itemRequestDto);
         item.setId(itemId);
@@ -111,7 +113,7 @@ public class ItemController {
 
     // GET
 
-    @GetMapping(path = "/item-categories")
+    @GetMapping(path = "/items/categories")
     public List<ItemCategoryDto> getAllItemCategories() {
 
         List<ItemCategory> itemCategories = itemService.getAllItemCategories();
@@ -123,7 +125,7 @@ public class ItemController {
         return itemCategoriesDto;
     }
     
-    @GetMapping(path = "/item-rarities")
+    @GetMapping(path = "/items/rarities")
     public List<ItemRarityDto> getAllItemRarities() {
 
         List<ItemRarity> itemRarities = itemService.getAllItemRarities();
@@ -167,13 +169,13 @@ public class ItemController {
 
     // DELETE
     
-    @DeleteMapping(path = "/item-categories/{itemCategoryId}")
+    @DeleteMapping(path = "/items/categories/{itemCategoryId}")
     public ResponseEntity deleteItemCategory(@PathVariable Long itemCategoryId) {
         itemService.deleteItemCategory(itemCategoryId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping(path = "/item-rarities/{itemRarityId}")
+    @DeleteMapping(path = "/items/rarities/{itemRarityId}")
     public ResponseEntity deleteItemRarity(@PathVariable Long itemRarityId) {
         itemService.deleteItemRarity(itemRarityId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);

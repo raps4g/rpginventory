@@ -3,6 +3,7 @@ package com.raps4g.rpginventory.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,44 +19,37 @@ import com.raps4g.rpginventory.domain.entities.dto.SlotDto;
 import com.raps4g.rpginventory.services.SlotService;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 
 @RestController
 public class SlotController {
-    private SlotService slotService;
 
-    public SlotController(SlotService slotService) {
-        this.slotService = slotService;
-    }
+    @Autowired
+    private SlotService slotService;
 
     // POST
 
     @PostMapping(path = "/slots")
-    public ResponseEntity<SlotDto> createSlot(@RequestBody SlotDto slotDto) {
-        try {
-            Slot slot = slotService.convertFromSlotDto(slotDto);
-            Slot savedSlot = slotService.saveSlot(slot);
-            SlotDto savedSlotDto = slotService.convertToSlotDto(savedSlot);
-            return new ResponseEntity<>(savedSlotDto, HttpStatus.CREATED);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); 
-        }
+    public ResponseEntity<SlotDto> createSlot(@Valid @RequestBody SlotDto slotDto) {
+        Slot slot = slotService.convertFromSlotDto(slotDto);
+        Slot savedSlot = slotService.saveSlot(slot);
+        SlotDto savedSlotDto = slotService.convertToSlotDto(savedSlot);
+        return new ResponseEntity<>(savedSlotDto, HttpStatus.CREATED);
     }
     
 
     // PUT
    
     @PutMapping(path = "/slots/{slotId}")
-    public ResponseEntity<SlotDto> uptadeSlot(@PathVariable Long slotId, 
-        @RequestBody SlotDto slotDto) {
-        try {
-            Slot slot = slotService.convertFromSlotDto(slotDto);
-            slot.setId(slotId);
-            Slot savedSlot = slotService.saveSlot(slot);
-            SlotDto savedSlotDto = slotService.convertToSlotDto(savedSlot);
-            return new ResponseEntity<>(savedSlotDto, HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); 
-        }
+    public ResponseEntity<SlotDto> uptadeSlot(
+        @PathVariable Long slotId, 
+        @Valid @RequestBody SlotDto slotDto
+    ) {
+        Slot slot = slotService.convertFromSlotDto(slotDto);
+        slot.setId(slotId);
+        Slot savedSlot = slotService.saveSlot(slot);
+        SlotDto savedSlotDto = slotService.convertToSlotDto(savedSlot);
+        return new ResponseEntity<>(savedSlotDto, HttpStatus.OK);
     }
 
 

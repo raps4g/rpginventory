@@ -17,6 +17,8 @@ import com.raps4g.rpginventory.domain.entities.Player;
 import com.raps4g.rpginventory.domain.entities.dto.PlayerDto;
 import com.raps4g.rpginventory.services.PlayerService;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class PlayerController {
 
@@ -24,35 +26,35 @@ public class PlayerController {
     private PlayerService playerService;
 
     // POST
-    
-    @PostMapping(path = "/players")
-    public ResponseEntity<PlayerDto> createPlayer(@RequestBody PlayerDto playerDto) {
 
-            Player player = playerService.mapFromPlayerDto(playerDto);
-            Player savedPlayer = playerService.savePlayer(player);
-            PlayerDto savedPlayerDto = playerService.mapToPlayerDto(savedPlayer);
-        
-            return new ResponseEntity<>(savedPlayerDto, HttpStatus.CREATED);
+    @PostMapping(path = "/players")
+    public ResponseEntity<PlayerDto> createPlayer(@Valid @RequestBody PlayerDto playerDto) {
+
+        Player player = playerService.mapFromPlayerDto(playerDto);
+        Player savedPlayer = playerService.savePlayer(player);
+        PlayerDto savedPlayerDto = playerService.mapToPlayerDto(savedPlayer);
+
+        return new ResponseEntity<>(savedPlayerDto, HttpStatus.CREATED);
     }
-   
-    
+
+
     // PUT
 
     @PutMapping(path = "/players/{playerId}")
     public ResponseEntity<PlayerDto> updatePlayer(
         @PathVariable Long playerId, 
-        @RequestBody PlayerDto playerDto
-        ) {
+        @Valid @RequestBody PlayerDto playerDto
+    ) {
 
-            Player player = playerService.mapFromPlayerDto(playerDto);
-            player.setId(playerId);
-            Player savedPlayer = playerService.savePlayer(player);
-            PlayerDto savedPlayerDto = playerService.mapToPlayerDto(savedPlayer);
+        Player player = playerService.mapFromPlayerDto(playerDto);
+        player.setId(playerId);
+        Player savedPlayer = playerService.savePlayer(player);
+        PlayerDto savedPlayerDto = playerService.mapToPlayerDto(savedPlayer);
 
-            return new ResponseEntity<>(savedPlayerDto, HttpStatus.OK);
+        return new ResponseEntity<>(savedPlayerDto, HttpStatus.OK);
     }
 
-    
+
     // GET
 
     @GetMapping(path = "/players")
@@ -71,7 +73,7 @@ public class PlayerController {
         return new ResponseEntity<>(foundPlayerDto, HttpStatus.OK);
     }
 
-    
+
     //DELETE
 
     @DeleteMapping(path = "/players/{playerId}")
