@@ -1,5 +1,6 @@
 package com.raps4g.rpginventory.services.impl;
 
+import com.raps4g.rpginventory.services.PlayerService;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -16,7 +17,6 @@ import com.raps4g.rpginventory.repositories.InventoryItemRepository;
 import com.raps4g.rpginventory.repositories.PlayerRepository;
 import com.raps4g.rpginventory.services.EquipmentService;
 import com.raps4g.rpginventory.services.InventoryService;
-import com.raps4g.rpginventory.services.PlayerService;
 import com.raps4g.rpginventory.services.SlotService;
 
 

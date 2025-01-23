@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,5 +25,8 @@ public class Player {
     @Column(unique = true, nullable = false)
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true)
+    private User user;
     private Long gold;
 }

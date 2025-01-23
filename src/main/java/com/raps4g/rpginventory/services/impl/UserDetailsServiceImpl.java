@@ -1,5 +1,6 @@
-package com.raps4g.rpginventory.services;
+package com.raps4g.rpginventory.services.impl;
 
+import com.raps4g.rpginventory.services.impl.UserDetailsServiceImpl;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,7 @@ import com.raps4g.rpginventory.repositories.UserRepository;
 
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService{
+public class UserDetailsServiceImpl implements UserDetailsService{
 
     @Autowired
     private UserRepository userRepository;

@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.raps4g.rpginventory.services.CustomUserDetailsService;
+import com.raps4g.rpginventory.services.impl.UserDetailsServiceImpl;
 import com.raps4g.rpginventory.services.JwtService;
 
 import jakarta.servlet.FilterChain;
@@ -45,7 +45,7 @@ public class JwtFilter extends OncePerRequestFilter{
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             
-            UserDetails userDetails = context.getBean(CustomUserDetailsService.class).loadUserByUsername(username); 
+            UserDetails userDetails = context.getBean(UserDetailsServiceImpl.class).loadUserByUsername(username); 
             
             if(jwtService.validateToken(token, userDetails)) {
 

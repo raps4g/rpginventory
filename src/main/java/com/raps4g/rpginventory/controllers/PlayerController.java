@@ -1,5 +1,7 @@
 package com.raps4g.rpginventory.controllers;
 
+import java.net.http.HttpRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.raps4g.rpginventory.model.Player;
+import com.raps4g.rpginventory.model.User;
 import com.raps4g.rpginventory.dto.PlayerDto;
+import com.raps4g.rpginventory.services.JwtService;
 import com.raps4g.rpginventory.services.PlayerService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
@@ -25,12 +30,24 @@ public class PlayerController {
     @Autowired
     private PlayerService playerService;
 
+    @Autowired
+    private JwtService jwtService;
+
     // POST
 
     @PostMapping(path = "/players")
-    public ResponseEntity<PlayerDto> createPlayer(@Valid @RequestBody PlayerDto playerDto) {
+    public ResponseEntity<PlayerDto> createPlayer(
+        HttpServletRequest http,
+        @Valid @RequestBody PlayerDto playerDto
+    ) {
 
+        String authHeader = http.getHeader("Authorization");
+        String token = jwtService.extractToken(authHeader);
+        User user = jwtService.extractUser(token);
+        
         Player player = playerService.mapFromPlayerDto(playerDto);
+        player.setGold(1000L);
+        player.setUser(user); 
         Player savedPlayer = playerService.savePlayer(player);
         PlayerDto savedPlayerDto = playerService.mapToPlayerDto(savedPlayer);
 
@@ -42,12 +59,18 @@ public class PlayerController {
 
     @PutMapping(path = {"/admin/players/{playerId}","/players/{playerId}"})
     public ResponseEntity<PlayerDto> updatePlayer(
+        HttpServletRequest http,
         @PathVariable Long playerId, 
         @Valid @RequestBody PlayerDto playerDto
     ) {
 
+        String authHeader = http.getHeader("Authorization");
+        String token = jwtService.extractToken(authHeader);
+        User user = jwtService.extractUser(token);
+        
         Player player = playerService.mapFromPlayerDto(playerDto);
         player.setId(playerId);
+        player.setUser(user); 
         Player savedPlayer = playerService.savePlayer(player);
         PlayerDto savedPlayerDto = playerService.mapToPlayerDto(savedPlayer);
 
