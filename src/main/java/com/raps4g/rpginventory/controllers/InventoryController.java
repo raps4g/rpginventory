@@ -47,7 +47,7 @@ public class InventoryController {
         return new ResponseEntity<>(createdInventoryDto, HttpStatus.CREATED);
     }
    
-    @PostMapping(path = "/players/{playerId}/inventory/items")
+    @PostMapping(path = "/admin/players/{playerId}/inventory/items")
     public ResponseEntity<InventoryItemResponseDto> addItemToInventory(
         @PathVariable Long playerId, 
         @Validated(ItemValidationGroup.class) @RequestBody InventoryItemRequestDto inventoryItemDto
@@ -110,7 +110,7 @@ public class InventoryController {
 
     // DELETE
     
-    @DeleteMapping(path = "/players/{playerId}/inventory/items")
+    @DeleteMapping(path = "/admin/players/{playerId}/inventory/items")
     public ResponseEntity removeItemFromInventory(
         @PathVariable Long playerId, 
         @Validated(InventoryItemValidationGroup.class) @RequestBody InventoryItemRequestDto inventoryItemDto
@@ -122,7 +122,7 @@ public class InventoryController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping(path = "/players/{playerId}/inventory")
+    @DeleteMapping(path = "/admin/players/{playerId}/inventory")
     public ResponseEntity deletePlayerInventory(
         @PathVariable Long playerId 
     ) {
@@ -130,7 +130,7 @@ public class InventoryController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
     
-    @DeleteMapping(path = "/players/{playerId}/inventory/items/clear")
+    @DeleteMapping(path = "/admin/players/{playerId}/inventory/items/clear")
     public ResponseEntity clearPlayerInventoryItems(
         @PathVariable Long playerId 
     ) {

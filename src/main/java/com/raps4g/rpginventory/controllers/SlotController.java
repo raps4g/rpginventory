@@ -29,7 +29,7 @@ public class SlotController {
 
     // POST
 
-    @PostMapping(path = "/slots")
+    @PostMapping(path = "/admin/slots")
     public ResponseEntity<SlotDto> createSlot(@Valid @RequestBody SlotDto slotDto) {
         Slot slot = slotService.convertFromSlotDto(slotDto);
         Slot savedSlot = slotService.saveSlot(slot);
@@ -40,7 +40,7 @@ public class SlotController {
 
     // PUT
    
-    @PutMapping(path = "/slots/{slotId}")
+    @PutMapping(path = "/admin/slots/{slotId}")
     public ResponseEntity<SlotDto> uptadeSlot(
         @PathVariable Long slotId, 
         @Valid @RequestBody SlotDto slotDto
@@ -55,7 +55,7 @@ public class SlotController {
 
     // GET
 
-    @GetMapping(path = "/slots")
+    @GetMapping(path = {"/admin/slots","/slots"})
     public List<SlotDto> getAllSlots() {
         List<Slot> slots = slotService.getAllSlots();
         return slots.stream()
@@ -63,7 +63,7 @@ public class SlotController {
         .collect(Collectors.toList());
     }
 
-    @DeleteMapping(path = "/slots/{slotId}")
+    @DeleteMapping(path = "/admin/slots/{slotId}")
     public ResponseEntity deleteSlot(@PathVariable Long slotId) {
         slotService.deleteSlot(slotId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);

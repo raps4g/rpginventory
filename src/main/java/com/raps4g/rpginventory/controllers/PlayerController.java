@@ -40,7 +40,7 @@ public class PlayerController {
 
     // PUT
 
-    @PutMapping(path = "/players/{playerId}")
+    @PutMapping(path = {"/admin/players/{playerId}","/players/{playerId}"})
     public ResponseEntity<PlayerDto> updatePlayer(
         @PathVariable Long playerId, 
         @Valid @RequestBody PlayerDto playerDto
@@ -57,7 +57,7 @@ public class PlayerController {
 
     // GET
 
-    @GetMapping(path = "/players")
+    @GetMapping(path = {"/admin/players","/players"})
     public Page<PlayerDto> getAllPlayers(Pageable pageable) {
 
         Page<Player> players = playerService.getAllPlayers(pageable);
@@ -65,7 +65,7 @@ public class PlayerController {
         return players.map(playerService::mapToPlayerDto);
     }
 
-    @GetMapping(path = "/players/{playerId}")
+    @GetMapping(path = {"/admin/players/{playerId}","/players/{playerId}"})
     public ResponseEntity<PlayerDto> getPlayer(@PathVariable Long playerId) {
 
         Player foundPlayer = playerService.getPlayer(playerId);
@@ -76,7 +76,7 @@ public class PlayerController {
 
     //DELETE
 
-    @DeleteMapping(path = "/players/{playerId}")
+    @DeleteMapping(path = "/admin/players/{playerId}")
     public ResponseEntity deletePlayer(@PathVariable Long playerId) {
 
         playerService.deletePlayer(playerId);

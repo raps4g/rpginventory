@@ -37,7 +37,7 @@ public class ItemController {
 
     // POST
 
-    @PostMapping(path = "/items/categories")
+    @PostMapping(path = "/admin/items/categories")
     public ResponseEntity<ItemCategoryDto> createItemCategory(@Valid @RequestBody ItemCategoryDto itemCategoryDto) {
 
         ItemCategory itemCategory = itemService.mapFromItemCategoryDto(itemCategoryDto);
@@ -47,7 +47,7 @@ public class ItemController {
         return new ResponseEntity<>(savedItemCategoryDto, HttpStatus.CREATED);
     }
     
-    @PostMapping(path = "/items/rarities")
+    @PostMapping(path = "/admin/items/rarities")
     public ResponseEntity<ItemRarityDto> createItemRarity(@Valid @RequestBody ItemRarityDto itemRarityDto) {
 
         ItemRarity itemRarity = itemService.mapFromItemRarityDto(itemRarityDto);
@@ -57,7 +57,7 @@ public class ItemController {
         return new ResponseEntity<>(savedItemRarityDto, HttpStatus.CREATED);
     }
     
-    @PostMapping(path = "/items")
+    @PostMapping(path = "/admin/items")
     public ResponseEntity<ItemDto> createItem(@Valid @RequestBody ItemRequestDto itemRequestDto) {
 
             Item item = itemService.mapFromItemRequestDto(itemRequestDto);
@@ -70,7 +70,7 @@ public class ItemController {
 
     // PUT
 
-    @PutMapping(path = "/items/categories/{itemCategoryId}")
+    @PutMapping(path = "/admin/items/categories/{itemCategoryId}")
     public ResponseEntity<ItemCategoryDto> updateItemCategory(
         @PathVariable Long itemCategoryId, 
         @Valid @RequestBody ItemCategoryDto itemCategoryDto
@@ -84,7 +84,7 @@ public class ItemController {
         return new ResponseEntity<>(savedItemCategoryDto, HttpStatus.OK);
     }
 
-    @PutMapping(path = "/items/rarities/{itemRarityId}")
+    @PutMapping(path = "/admin/items/rarities/{itemRarityId}")
     public ResponseEntity<ItemRarityDto> updateItemRarity(
         @PathVariable Long itemRarityId, 
         @Valid @RequestBody ItemRarityDto itemRarityDto
@@ -97,7 +97,7 @@ public class ItemController {
         return new ResponseEntity<>(savedItemRarityDto, HttpStatus.OK);
     }
 
-    @PutMapping(path = "/items/{itemId}")
+    @PutMapping(path = "/admin/items/{itemId}")
     public ResponseEntity<ItemDto> updateItem(
         @PathVariable Long itemId, 
         @Valid @RequestBody ItemRequestDto itemRequestDto
@@ -169,19 +169,19 @@ public class ItemController {
 
     // DELETE
     
-    @DeleteMapping(path = "/items/categories/{itemCategoryId}")
+    @DeleteMapping(path = "/admin/items/categories/{itemCategoryId}")
     public ResponseEntity deleteItemCategory(@PathVariable Long itemCategoryId) {
         itemService.deleteItemCategory(itemCategoryId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping(path = "/items/rarities/{itemRarityId}")
+    @DeleteMapping(path = "/admin/items/rarities/{itemRarityId}")
     public ResponseEntity deleteItemRarity(@PathVariable Long itemRarityId) {
         itemService.deleteItemRarity(itemRarityId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping(path = "/items/{itemId}")
+    @DeleteMapping(path = "/admin/items/{itemId}")
     public ResponseEntity deleteItem(@PathVariable Long itemId) {
         itemService.deleteItem(itemId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
