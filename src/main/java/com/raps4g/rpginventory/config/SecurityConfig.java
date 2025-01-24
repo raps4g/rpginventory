@@ -1,5 +1,8 @@
 package com.raps4g.rpginventory.config;
 
+import com.raps4g.rpginventory.filters.JwtFilter;
+import com.raps4g.rpginventory.filters.PlayerOwnershipFilter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +30,8 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter JwtFilter;
 
+    @Autowired PlayerOwnershipFilter playerOwnershipFilter;
+
     @Bean
     public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
 
@@ -36,6 +41,7 @@ public class SecurityConfig {
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
             .addFilterBefore(JwtFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(playerOwnershipFilter, UsernamePasswordAuthenticationFilter.class)
             .httpBasic(Customizer.withDefaults())
             .logout(Customizer.withDefaults())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -61,5 +67,4 @@ public class SecurityConfig {
 
         return provider;
     }
-
 }

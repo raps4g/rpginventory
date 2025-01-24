@@ -1,4 +1,4 @@
-package com.raps4g.rpginventory.config;
+package com.raps4g.rpginventory.filters;
 
 import java.io.IOException;
 import java.util.List;

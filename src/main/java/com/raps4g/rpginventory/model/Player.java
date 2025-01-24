@@ -26,7 +26,7 @@ public class Player {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
     private Long gold;
 }
