@@ -18,7 +18,6 @@ import com.raps4g.rpginventory.model.Slot;
 import com.raps4g.rpginventory.dto.SlotDto;
 import com.raps4g.rpginventory.services.SlotService;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController

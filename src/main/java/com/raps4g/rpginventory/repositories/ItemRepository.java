@@ -1,19 +1,16 @@
 package com.raps4g.rpginventory.repositories;
 
 import com.raps4g.rpginventory.model.Item;
-import com.raps4g.rpginventory.model.ItemCategory;
 
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ItemRepository extends CrudRepository<Item, Long>,
-        PagingAndSortingRepository<Item, Long> {
+public interface ItemRepository extends JpaRepository<Item, Long> {
 
     Optional<Item> findByName(String name);
 
@@ -36,4 +33,5 @@ public interface ItemRepository extends CrudRepository<Item, Long>,
     boolean existsByItemRarityId(Long itemRarityId);
 
     boolean existsByValidSlotId(Long slotId);
+
 }

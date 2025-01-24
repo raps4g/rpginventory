@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.raps4g.rpginventory.model.Player;
-import com.raps4g.rpginventory.model.User;
 import com.raps4g.rpginventory.dto.PlayerDto;
 import com.raps4g.rpginventory.exceptions.ResourceAlreadyExistsException;
 import com.raps4g.rpginventory.exceptions.ResourceNotFoundException;

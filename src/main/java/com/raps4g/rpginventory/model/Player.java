@@ -22,11 +22,13 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "player_seq")
     private Long id;
+    
     @Column(unique = true, nullable = false)
     private String name;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+    
     private Long gold;
 }

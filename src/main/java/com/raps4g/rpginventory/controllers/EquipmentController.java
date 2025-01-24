@@ -7,11 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,7 +31,8 @@ public class EquipmentController {
     @PostMapping(path = "/players/{playerId}/equipment")
     public ResponseEntity<EquipmentItemDto> equipItem (
         @PathVariable Long playerId,
-        @Validated(InventoryItemValidationGroup.class) @RequestBody InventoryItemRequestDto inventoryItemRequestDto
+        @Validated(InventoryItemValidationGroup.class) 
+            @RequestBody InventoryItemRequestDto inventoryItemRequestDto
     ) throws IllegalAccessException {
 
         Long inventoryItemId = inventoryItemRequestDto.getInventoryItemId();
@@ -46,7 +45,8 @@ public class EquipmentController {
     @PostMapping(path = "/players/{playerId}/equipment/unequip")
     public ResponseEntity unequipItem(
         @PathVariable Long playerId,
-        @Validated(InventoryItemValidationGroup.class) @RequestBody InventoryItemRequestDto inventoryItemRequestDto
+        @Validated(InventoryItemValidationGroup.class)
+            @RequestBody InventoryItemRequestDto inventoryItemRequestDto
     ) throws IllegalAccessException {
 
         Long inventoryItemId = inventoryItemRequestDto.getInventoryItemId();

@@ -1,11 +1,5 @@
 package com.raps4g.rpginventory.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,12 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class EquipmentItemDto {
-
     private Long id;
-
     private PlayerDto player;
-
     private InventoryItemResponseDto inventoryItem;
-
     private SlotDto slot;
 }

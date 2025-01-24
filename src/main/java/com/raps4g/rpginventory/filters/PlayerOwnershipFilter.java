@@ -1,9 +1,17 @@
 package com.raps4g.rpginventory.filters;
 
+import com.raps4g.rpginventory.exceptions.PlayerOwnershipException;
+import java.time.Instant;
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.raps4g.rpginventory.exceptions.ResourceNotFoundException;
 import com.raps4g.rpginventory.model.Player;
 import com.raps4g.rpginventory.repositories.PlayerRepository;
 import com.raps4g.rpginventory.services.JwtService;
@@ -24,38 +32,64 @@ public class PlayerOwnershipFilter extends OncePerRequestFilter {
     private PlayerRepository playerRepository;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, java.io.IOException {
+    protected void doFilterInternal(
+        HttpServletRequest request, 
+        HttpServletResponse response,
+        FilterChain filterChain
+    ) throws ServletException, IOException, java.io.IOException {
         String uri = request.getRequestURI();
-        if (uri.contains("/players")) {
-            Long playerId = extractPlayerIdFromUri(uri);
-            System.out.println(playerId);
+        
+        try {
+            if (isAdmin()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+            if (uri.contains("/players")) {
 
-            if (playerId != null) {
-                String authHeader = request.getHeader("Authorization");
-                if (authHeader == null) {
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);  // Or throw a custom exception
-                    response.getWriter().write("You do not have permission to access this resource.");
-                    return;
+                Long playerId = extractPlayerIdFromUri(uri);
+
+                if (playerId != null) {
+
+                    String authHeader = request.getHeader("Authorization");
+
+                    if (authHeader == null) {
+                        throw new PlayerOwnershipException("You do not have permission to access this resource.");
+                    }
+
+                    String token = jwtService.extractToken(authHeader);
+                    Long userId = jwtService.extractUserId(token);
+
+                    Player player = playerRepository.findById(playerId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Player with id " + playerId + " not found."));
+
+                    if (!userId.equals(player.getUser().getId())) {
+                        throw new PlayerOwnershipException("You do not have permission to access this resource.");
+                    }
                 }
-                String token = jwtService.extractToken(authHeader);
-                Long userId = jwtService.extractUserId(token);
+            }
 
-                Player player = playerRepository.findById(playerId)
-                    .orElseThrow(() -> new RuntimeException("Player not found in filter."));
+            filterChain.doFilter(request, response);
+        } catch (PlayerOwnershipException e) {
+            handleException(response, "FORBIDDEN", e.getMessage(), HttpServletResponse.SC_FORBIDDEN);
+        } catch (ResourceNotFoundException e) {
+            handleException(response, "RESOURCE_NOT_FOUND", e.getMessage(), HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
 
-                if (!userId.equals(player.getUser().getId())) {
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);  // Or throw a custom exception
-                    response.getWriter().write("You do not have permission to access this resource.");
-                    return;
+    private boolean isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+            for (GrantedAuthority authority : authorities) {
+                if ("ROLE_ADMIN".equals(authority.getAuthority())) {
+                    return true;
                 }
             }
         }
-        System.out.println("User validated.");
-        filterChain.doFilter(request, response); // Continue processing the request
+        return false;
     }
 
     private Long extractPlayerIdFromUri(String uri) {
-        System.out.println(uri);
         String target = "/players/";
         int startIndex = uri.indexOf(target);
 
@@ -75,5 +109,25 @@ public class PlayerOwnershipFilter extends OncePerRequestFilter {
 
         return null;
     }
-}
 
+    private void handleException(
+        HttpServletResponse response,
+        String errorCode,
+        String message,
+        int statusCode
+    ) throws IOException, java.io.IOException {
+        response.setStatus(statusCode);
+        response.setContentType("application/json");
+
+        String jsonResponse = String.format(
+            "{ \"timestamp\": \"%s\", \"message\": \"%s\", \"status\": %d, \"error_code\": \"%s\", }",
+            Instant.now(),
+            message,
+            statusCode,
+            errorCode
+        );
+
+        response.getWriter().write(jsonResponse);
+        response.getWriter().flush();
+    }
+}

@@ -21,9 +21,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private JwtService jwtService;
-
     @PostMapping("/register")
     public ResponseEntity<UserResponseDto> register(@RequestBody RegisterRequestDto registerRequestDto) {
         User user = userService.mapFromRegisterRequestDto(registerRequestDto);

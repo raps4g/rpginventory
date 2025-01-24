@@ -11,10 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class PlayerDto {
-    
     private Long id;
     @NotNull(message = "'name' field is required.")
     private String name;
     private Long gold;
-
 }

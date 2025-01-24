@@ -26,8 +26,6 @@ import com.raps4g.rpginventory.services.PlayerService;
 import com.raps4g.rpginventory.validation.InventoryItemValidationGroup;
 import com.raps4g.rpginventory.validation.ItemValidationGroup;
 
-import jakarta.validation.Valid;
-
 @RestController
 public class InventoryController {
 
@@ -50,7 +48,8 @@ public class InventoryController {
     @PostMapping(path = "/admin/players/{playerId}/inventory/items")
     public ResponseEntity<InventoryItemResponseDto> addItemToInventory(
         @PathVariable Long playerId, 
-        @Validated(ItemValidationGroup.class) @RequestBody InventoryItemRequestDto inventoryItemDto
+        @Validated(ItemValidationGroup.class)
+            @RequestBody InventoryItemRequestDto inventoryItemDto
     ) {
         Long itemId = inventoryItemDto.getItemId();
         InventoryItem addedInventoryItem = inventoryService.addItemToInventory(playerId, itemId);
@@ -62,7 +61,8 @@ public class InventoryController {
     @PostMapping(path = "/players/{playerId}/inventory/items/buy")
     public ResponseEntity<InventoryItemResponseDto> buyItem(
         @PathVariable Long playerId, 
-        @Validated(ItemValidationGroup.class) @RequestBody InventoryItemRequestDto inventoryItemDto
+        @Validated(ItemValidationGroup.class)
+            @RequestBody InventoryItemRequestDto inventoryItemDto
     ) {
 
         Long itemId = inventoryItemDto.getItemId();
@@ -72,11 +72,11 @@ public class InventoryController {
         return new ResponseEntity<>(boughtInventoryItemDto, HttpStatus.CREATED);
     }
    
-    // change id to inventoryItemId
     @PostMapping(path = "/players/{playerId}/inventory/items/sell")
     public ResponseEntity<PlayerDto> sellItem(
         @PathVariable Long playerId, 
-        @Validated(InventoryItemValidationGroup.class) @RequestBody InventoryItemRequestDto inventoryItemDto
+        @Validated(InventoryItemValidationGroup.class)
+            @RequestBody InventoryItemRequestDto inventoryItemDto
     ) throws IllegalAccessException {
         
         Long inventoryItemId = inventoryItemDto.getInventoryItemId();
@@ -113,7 +113,8 @@ public class InventoryController {
     @DeleteMapping(path = "/admin/players/{playerId}/inventory/items")
     public ResponseEntity removeItemFromInventory(
         @PathVariable Long playerId, 
-        @Validated(InventoryItemValidationGroup.class) @RequestBody InventoryItemRequestDto inventoryItemDto
+        @Validated(InventoryItemValidationGroup.class)
+            @RequestBody InventoryItemRequestDto inventoryItemDto
     ) throws IllegalAccessException {
 
         Long inventoryItemId = inventoryItemDto.getInventoryItemId();

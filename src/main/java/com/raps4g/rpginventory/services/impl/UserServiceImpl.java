@@ -2,6 +2,7 @@ package com.raps4g.rpginventory.services.impl;
 
 import com.raps4g.rpginventory.services.JwtService;
 import com.raps4g.rpginventory.services.UserService;
+import com.raps4g.rpginventory.exceptions.InvalidCredentialsException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.raps4g.rpginventory.dto.LoginRequestDto;
 import com.raps4g.rpginventory.dto.RegisterRequestDto;
 import com.raps4g.rpginventory.dto.UserResponseDto;
+import com.raps4g.rpginventory.exceptions.ResourceAlreadyExistsException;
 import com.raps4g.rpginventory.model.Role;
 import com.raps4g.rpginventory.model.User;
 import com.raps4g.rpginventory.repositories.RoleRepository;
@@ -71,7 +73,7 @@ public class UserServiceImpl implements UserService {
     public User register(User user) {
         
         if(userRepository.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("user already exists.");
+            throw new ResourceAlreadyExistsException("User with username " + user.getUsername() + " already exists.");
         }
 
         Optional<Role> foundUserRole = roleRepository.findByName("USER");
@@ -95,12 +97,12 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = 
             authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 
-        if (authentication.isAuthenticated()) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-            return jwtService.generateToken(user.getUsername(), userDetails.getAuthorities());
+        if (!authentication.isAuthenticated()) {
+            throw new InvalidCredentialsException("Invalid Credentials.");
         }
-        throw new RuntimeException("Invalid Credentials.");
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return jwtService.generateToken(user.getUsername(), userDetails.getAuthorities());
+
     }
 
 }

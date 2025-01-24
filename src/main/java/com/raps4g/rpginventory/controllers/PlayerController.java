@@ -1,7 +1,5 @@
 package com.raps4g.rpginventory.controllers;
 
-import java.net.http.HttpRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -84,7 +82,6 @@ public class PlayerController {
     public Page<PlayerDto> getAllPlayers(Pageable pageable) {
 
         Page<Player> players = playerService.getAllPlayers(pageable);
-
         return players.map(playerService::mapToPlayerDto);
     }
 

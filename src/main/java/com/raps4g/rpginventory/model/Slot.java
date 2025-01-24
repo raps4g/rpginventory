@@ -16,9 +16,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 public class Slot {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "slot_seq")
     Long id;
+    
     @Column(unique = true, nullable = false)
     String name;
 }

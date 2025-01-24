@@ -3,15 +3,13 @@ package com.raps4g.rpginventory.repositories;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.raps4g.rpginventory.model.EquipmentItem;
 
 @Repository
-public interface EquipmentItemRepository extends CrudRepository<EquipmentItem, Long>, 
-                    PagingAndSortingRepository<EquipmentItem, Long> {
+public interface EquipmentItemRepository extends JpaRepository<EquipmentItem, Long> {
 
     List<EquipmentItem> findAllByPlayerId(Long playerId);
 

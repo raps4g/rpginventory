@@ -3,7 +3,6 @@ package com.raps4g.rpginventory.services.impl;
 import com.raps4g.rpginventory.services.PlayerService;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +10,7 @@ import com.raps4g.rpginventory.model.EquipmentItem;
 import com.raps4g.rpginventory.model.InventoryItem;
 import com.raps4g.rpginventory.dto.EquipmentItemDto;
 import com.raps4g.rpginventory.exceptions.ResourceNotFoundException;
-import com.raps4g.rpginventory.exceptions.SlotAlreadyInUseException;
+import com.raps4g.rpginventory.exceptions.ItemCannotBeEquippedException;
 import com.raps4g.rpginventory.repositories.EquipmentItemRepository;
 import com.raps4g.rpginventory.repositories.InventoryItemRepository;
 import com.raps4g.rpginventory.repositories.PlayerRepository;
@@ -23,9 +22,6 @@ import com.raps4g.rpginventory.services.SlotService;
 @Service
 public class EquipmentServiceImpl implements EquipmentService{
   
-    @Autowired
-    private ModelMapper modelMapper;
-    
     @Autowired
     private EquipmentItemRepository equipmentItemRepository;
 
@@ -75,8 +71,12 @@ public class EquipmentServiceImpl implements EquipmentService{
             throw new IllegalAccessException("Inventory item with id " + inventoryItemId + " cannot be equipped by player with id " + playerId + ".");
         }
 
+        if (inventoryItem.getItem().getValidSlot() == null) {
+            throw new ItemCannotBeEquippedException("Item is not equipable.");
+        }
+
         if (equipmentItemRepository.findBySlotId(inventoryItem.getItem().getValidSlot().getId()).isPresent()) {
-            throw new SlotAlreadyInUseException("Inventory item with id " + inventoryItemId + " cannot be equipped because the corresponding slot is already in use.");
+            throw new ItemCannotBeEquippedException("Inventory item with id " + inventoryItemId + " cannot be equipped because the corresponding slot is already in use.");
         }
 
         EquipmentItem equipmentItem = EquipmentItem.builder()

@@ -11,11 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
 public class InventoryDto {
-    
     private Long id;
     private Long playerId;
     private ArrayList<Long> inventoryItemIds;
-
 }

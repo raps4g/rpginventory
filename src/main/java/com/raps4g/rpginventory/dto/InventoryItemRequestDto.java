@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
 public class InventoryItemRequestDto {
     @NotNull(groups = InventoryItemValidationGroup.class, message = "'inventoryItemId' field is required.")
     private Long inventoryItemId;

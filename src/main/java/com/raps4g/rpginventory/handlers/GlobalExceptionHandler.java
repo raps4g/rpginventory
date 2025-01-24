@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.raps4g.rpginventory.exceptions.InsufficientGoldException;
 import com.raps4g.rpginventory.exceptions.ResourceAlreadyExistsException;
 import com.raps4g.rpginventory.exceptions.ResourceNotFoundException;
-import com.raps4g.rpginventory.exceptions.SlotAlreadyInUseException;
+import com.raps4g.rpginventory.exceptions.InvalidCredentialsException;
+
+
+import com.raps4g.rpginventory.exceptions.ItemCannotBeEquippedException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -51,10 +54,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleIllegalAccessException(IllegalAccessException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "ILLEGAL_ACCESS", ex.getMessage());
     }
+    
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<Object> handleInvalidCredentialsException(InvalidCredentialsException ex) {
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", ex.getMessage());
+    }
 
-    @ExceptionHandler(SlotAlreadyInUseException.class)
-    public ResponseEntity<Object> handleSlotAlreadyInUseException(SlotAlreadyInUseException ex) {
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, "SLOT_ALREADY_IN_USE", ex.getMessage());
+    @ExceptionHandler(ItemCannotBeEquippedException.class)
+    public ResponseEntity<Object> handleItemCannotBeEquippedException(ItemCannotBeEquippedException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "CANNOT_EQUIP_ITEM", ex.getMessage());
     }
 
     @ExceptionHandler(InsufficientGoldException.class)
@@ -67,7 +75,6 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "DATA_INTEGRITY_VIOLATION", ex.getMessage());
     }
 
-    // Utility method for building standardized error responses
     private ResponseEntity<Object> buildErrorResponse(HttpStatus status, String errorCode, String message) {
         Map<String, Object> response = Map.of(
             "status", status.value(),
@@ -78,4 +85,5 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(status).body(response);
     }
+
 }
