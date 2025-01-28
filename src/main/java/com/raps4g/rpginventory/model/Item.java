@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class Item {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     
     @Column(unique = true, nullable = false)
@@ -29,16 +29,17 @@ public class Item {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private ItemCategory itemCategory;
     
     @ManyToOne
-    @JoinColumn(name = "rarity_id")
+    @JoinColumn(name = "rarity_id", nullable = false)
     private ItemRarity itemRarity;
    
     @ManyToOne
     private Slot validSlot;
 
+    @Column(name = "item_value", nullable = false)
     private Integer value;
 
 }

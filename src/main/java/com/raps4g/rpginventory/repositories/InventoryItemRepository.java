@@ -17,8 +17,6 @@ public interface InventoryItemRepository extends JpaRepository<InventoryItem, Lo
 
     boolean existsByItemId(Long itemId);
 
-    List<InventoryItem> findAllByItemId(Long itemId);
-
     boolean existsByInventoryId(Long id);
 
 }

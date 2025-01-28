@@ -123,7 +123,6 @@ public class InventoryServiceImpl implements InventoryService{
         inventoryItem.setInventory(playerInventory);
         inventoryItem.setItem(item);
 
-        playerInventory.getInventoryItems().add(inventoryItem);
         player.setGold(player.getGold() - item.getValue());
         
         playerRepository.save(player);
@@ -204,11 +203,11 @@ public class InventoryServiceImpl implements InventoryService{
         if (!playerRepository.existsById(playerId)) {
             throw new ResourceNotFoundException("Player with id " + playerId + " not found.");
         }
-        
+
         Inventory foundInventory = inventoryRepository.findById(playerId)
             .orElseThrow(() -> new ResourceNotFoundException("Inventory for playerId " + playerId + " not found."));
-            inventoryItemRepository.deleteByInventoryId(foundInventory.getId());
-        }
+        inventoryItemRepository.deleteByInventoryId(foundInventory.getId());
+    }
     
     @Override
     public Player sellItem(Long playerId, Long inventoryItemId) throws IllegalAccessException {

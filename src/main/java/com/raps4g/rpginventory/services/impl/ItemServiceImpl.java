@@ -128,19 +128,6 @@ public class ItemServiceImpl implements ItemService{
         if (itemRepository.existsByName(item.getName()) && item.getId() == null) {
             throw new ResourceAlreadyExistsException("Item with name '" + item.getName() + "' already exists.");
         }
-
-        if (item.getItemCategory().getId() == null) {
-            itemCategoryRepository.save(item.getItemCategory());
-        }
-
-        if (item.getItemRarity().getId() == null) {
-            itemRarityRepository.save(item.getItemRarity());
-        }
-
-        if (item.getValidSlot().getId() == null) {
-            slotRepository.save(item.getValidSlot());
-        }
-
         return itemRepository.save(item);
     }
 

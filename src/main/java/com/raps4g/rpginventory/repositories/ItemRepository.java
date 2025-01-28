@@ -14,17 +14,11 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     Optional<Item> findByName(String name);
 
-    Optional<Item> findByItemCategoryId(Long categoryId);
-
     Page<Item> findByItemCategoryId(Long categoryId, Pageable pageable);
 
-    Optional<Item> findByItemRarityId(Long rarityId);
-    
     Page<Item> findByItemRarityId(Long rarityId, Pageable pageable);
     
     Page<Item> findByItemCategoryIdAndItemRarityId(Long categoryId, Long rarityId, Pageable pageable);
-
-    Optional<Item> findByValidSlotId(Long slotId);
 
     boolean existsByName(String name);
 
