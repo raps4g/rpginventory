@@ -1,0 +1,23 @@
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    privileged: true
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./certs:/etc/ssl/certs
+    ports:
+      - "8443:443"
+    depends_on:
+      - rpginventory
+      - postgres
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://rpginventory:8080/health"]
+      interval: 5s
+      retries: 3
+
+networks:
+  app-network:
+    driver: bridge

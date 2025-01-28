@@ -3,12 +3,29 @@ services:
     image: postgres:14-alpine
     ports:
       - 5432:5432
-    #    volumes:
-      #  - inventory_volume:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: supersecretpassword
       POSTGRES_DB: inventory_db
+    networks:
+      - app-network
 
-#volumes:
-  #  inventory_volume:
+
+  rpginventory:
+    image: rpginventory
+    container_name: rpginventory
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/inventory_db
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+  
+networks:
+  app-network:
+    driver: bridge
