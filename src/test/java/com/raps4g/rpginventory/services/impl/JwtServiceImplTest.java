@@ -91,4 +91,3 @@ public class JwtServiceImplTest {
             .isInstanceOf(MalformedJwtException.class);
     }
 }
-

@@ -97,9 +97,6 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = 
             authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 
-        if (!authentication.isAuthenticated()) {
-            throw new InvalidCredentialsException("Invalid Credentials.");
-        }
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return jwtService.generateToken(user.getUsername(), userDetails.getAuthorities());
 

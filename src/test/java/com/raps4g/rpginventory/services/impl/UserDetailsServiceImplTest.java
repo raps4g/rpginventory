@@ -59,4 +59,3 @@ public class UserDetailsServiceImplTest {
         Assertions.assertThatThrownBy(() -> userDetailsService.loadUserByUsername(username))
             .isInstanceOf(UsernameNotFoundException.class);
     }}
-

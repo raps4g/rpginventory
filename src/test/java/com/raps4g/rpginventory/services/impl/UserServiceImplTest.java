@@ -139,7 +139,6 @@ public class UserServiceImplTest {
 
         Mockito.when(authManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class)))
             .thenReturn(authentication);
-        Mockito.when(authentication.isAuthenticated()).thenReturn(true);
         Mockito.when(authentication.getPrincipal()).thenReturn(userDetails);
         Mockito.when(jwtService.generateToken(inputUser.getUsername(), userDetails.getAuthorities()))
             .thenReturn(mockToken);
