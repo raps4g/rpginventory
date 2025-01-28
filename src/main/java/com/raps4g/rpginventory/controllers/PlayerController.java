@@ -1,5 +1,8 @@
 package com.raps4g.rpginventory.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -52,40 +55,34 @@ public class PlayerController {
         return new ResponseEntity<>(savedPlayerDto, HttpStatus.CREATED);
     }
 
+    // GET
 
-    // PUT
+    @GetMapping(path = {"/admin/players"})
+    public ResponseEntity<Page<PlayerDto>> getAllPlayers(Pageable pageable) {
 
-    @PutMapping(path = {"/admin/players/{playerId}","/players/{playerId}"})
-    public ResponseEntity<PlayerDto> updatePlayer(
-        HttpServletRequest http,
-        @PathVariable Long playerId, 
-        @Valid @RequestBody PlayerDto playerDto
+        Page<Player> players = playerService.getAllPlayers(pageable);
+
+        return new ResponseEntity<>(players.map(playerService::mapToPlayerDto),HttpStatus.OK);
+    }
+    
+    @GetMapping(path = {"/players"})
+    public ResponseEntity<List<PlayerDto>> getAllPlayersForCurrentUser(
+        HttpServletRequest http
     ) {
-
+        
         String authHeader = http.getHeader("Authorization");
         String token = jwtService.extractToken(authHeader);
         User user = jwtService.extractUser(token);
-        
-        Player player = playerService.mapFromPlayerDto(playerDto);
-        player.setId(playerId);
-        player.setUser(user); 
-        Player savedPlayer = playerService.savePlayer(player);
-        PlayerDto savedPlayerDto = playerService.mapToPlayerDto(savedPlayer);
+        Long userId = user.getId();
 
-        return new ResponseEntity<>(savedPlayerDto, HttpStatus.OK);
+        List<Player> players = playerService.getAllPlayersForCurrentUser(userId);
+        List<PlayerDto> playersDto = players.stream()
+            .map(playerService::mapToPlayerDto)
+            .collect(Collectors.toList());
+        return new ResponseEntity<>(playersDto, HttpStatus.OK);
     }
 
-
-    // GET
-
-    @GetMapping(path = {"/admin/players","/players"})
-    public Page<PlayerDto> getAllPlayers(Pageable pageable) {
-
-        Page<Player> players = playerService.getAllPlayers(pageable);
-        return players.map(playerService::mapToPlayerDto);
-    }
-
-    @GetMapping(path = {"/admin/players/{playerId}","/players/{playerId}"})
+    @GetMapping(path = {"/players/{playerId}"})
     public ResponseEntity<PlayerDto> getPlayer(@PathVariable Long playerId) {
 
         Player foundPlayer = playerService.getPlayer(playerId);

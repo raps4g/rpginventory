@@ -44,7 +44,7 @@ public class PlayerOwnershipFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
-            if (uri.contains("/players")) {
+            if (uri.startsWith("/players")) {
 
                 Long playerId = extractPlayerIdFromUri(uri);
 

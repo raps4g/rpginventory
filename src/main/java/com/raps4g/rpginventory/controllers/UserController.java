@@ -3,6 +3,7 @@ package com.raps4g.rpginventory.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,5 +37,11 @@ public class UserController {
         LoginResponseDto loginResponse = new LoginResponseDto(token);
         return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }
+    
+    @GetMapping("/health")
+    public ResponseEntity healthcheck() {
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 
 }

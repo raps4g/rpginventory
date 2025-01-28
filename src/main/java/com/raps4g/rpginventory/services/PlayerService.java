@@ -1,5 +1,7 @@
 package com.raps4g.rpginventory.services;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -24,7 +26,10 @@ public interface PlayerService {
    
     Page<Player> getAllPlayers(Pageable pageable);
     
+    List<Player> getAllPlayersForCurrentUser(Long userId);
+    
     // Delete
 
     void deletePlayer(Long itemId);
+
 }

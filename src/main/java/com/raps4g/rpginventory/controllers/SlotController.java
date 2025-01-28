@@ -54,12 +54,13 @@ public class SlotController {
 
     // GET
 
-    @GetMapping(path = {"/admin/slots","/slots"})
-    public List<SlotDto> getAllSlots() {
+    @GetMapping(path = {"/slots"})
+    public ResponseEntity<List<SlotDto>> getAllSlots() {
         List<Slot> slots = slotService.getAllSlots();
-        return slots.stream()
+        List<SlotDto> slotsDto = slots.stream()
         .map(slotService::convertToSlotDto)
         .collect(Collectors.toList());
+        return new ResponseEntity<>(slotsDto, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/admin/slots/{slotId}")

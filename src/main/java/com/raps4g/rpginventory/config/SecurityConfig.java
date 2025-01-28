@@ -37,7 +37,7 @@ public class SecurityConfig {
 
         http.csrf(customizer -> customizer.disable())
             .authorizeHttpRequests(request -> request
-                .requestMatchers("/register", "/login").permitAll()
+                .requestMatchers("/register", "/login", "/health").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
             .addFilterBefore(JwtFilter, UsernamePasswordAuthenticationFilter.class)

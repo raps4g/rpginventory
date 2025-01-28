@@ -97,7 +97,7 @@ public class InventoryController {
     }
 
     @GetMapping(path = "/players/{playerId}/inventory/items")
-    public List<InventoryItemResponseDto> getAllItemsInPlayerInventory(
+    public ResponseEntity<List<InventoryItemResponseDto>> getAllItemsInPlayerInventory(
         @PathVariable Long playerId) {
 
         List<InventoryItem> inventoryItems = inventoryService.getAllItemsInPlayerInventory(playerId);
@@ -105,7 +105,7 @@ public class InventoryController {
             .map(inventoryService::mapToInventoryItemResponseDto)
             .collect(Collectors.toList());
         
-        return inventoryItemsDto;
+        return new ResponseEntity<>(inventoryItemsDto, HttpStatus.OK);
     }
 
     // DELETE

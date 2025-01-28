@@ -1,6 +1,9 @@
 package com.raps4g.rpginventory.services.impl;
 
 import com.raps4g.rpginventory.services.PlayerService;
+
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -59,9 +62,14 @@ public class PlayerServiceImpl implements PlayerService{
 
     // Get
 
-   @Override
+    @Override
     public Page<Player> getAllPlayers(Pageable pageable) {
         return playerRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Player> getAllPlayersForCurrentUser(Long userId) {
+        return playerRepository.findAllByUserId(userId);
     }
 
     @Override
@@ -69,6 +77,7 @@ public class PlayerServiceImpl implements PlayerService{
         return playerRepository.findById(playerId)
         .orElseThrow(() -> new ResourceNotFoundException("Player with id: " + playerId + " not found"));
     }
+
 
 
     // Delete

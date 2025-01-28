@@ -114,7 +114,7 @@ public class ItemController {
     // GET
 
     @GetMapping(path = "/items/categories")
-    public List<ItemCategoryDto> getAllItemCategories() {
+    public ResponseEntity<List<ItemCategoryDto>> getAllItemCategories() {
 
         List<ItemCategory> itemCategories = itemService.getAllItemCategories();
 
@@ -122,11 +122,11 @@ public class ItemController {
         .map(itemService::mapToItemCategoryDto)
         .collect(Collectors.toList());
 
-        return itemCategoriesDto;
+        return new ResponseEntity<>(itemCategoriesDto, HttpStatus.OK);
     }
     
     @GetMapping(path = "/items/rarities")
-    public List<ItemRarityDto> getAllItemRarities() {
+    public ResponseEntity<List<ItemRarityDto>> getAllItemRarities() {
 
         List<ItemRarity> itemRarities = itemService.getAllItemRarities();
 
@@ -134,11 +134,11 @@ public class ItemController {
         .map(itemService::mapToItemRarityDto)
         .collect(Collectors.toList());
 
-        return itemRaritiesDto;
+        return new ResponseEntity<>(itemRaritiesDto, HttpStatus.OK);
     }
 
     @GetMapping(path = "/items")
-    public Page<ItemDto> getAllItems(
+    public ResponseEntity<Page<ItemDto>> getAllItems(
         Pageable pageable,
         @RequestParam(required = false) Long categoryId, 
         @RequestParam(required = false) Long rarityId
@@ -156,7 +156,7 @@ public class ItemController {
             items = itemService.getAllItems(pageable);
         }
 
-        return items.map(itemService::mapToItemDto);
+        return new ResponseEntity<>(items.map(itemService::mapToItemDto), HttpStatus.OK);
     }
 
     @GetMapping(path = "/items/{itemId}")
